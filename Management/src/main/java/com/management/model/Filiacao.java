@@ -1,17 +1,15 @@
 package com.management.model;
 
-public class Filiacao extends Pessoa {
+public class Filiacao extends Dominio {
     private String nomePai;
     private String nomeMae;
 
-    // Construtor Padrão
-    public Filiacao() {}
-
     public Filiacao(Long id, String nome, String nomePai, String nomeMae) {
-        super(id, nome); // aproveita o construtor da Pessoa
+        super(nome, id);
         this.nomePai = nomePai;
         this.nomeMae = nomeMae;
     }
+
 
     public String getNomePai() {
         return nomePai;

@@ -1,14 +1,11 @@
 package com.management.model;
 
-public class Documentos extends Pessoa {
+public class Documentos extends Dominio {
     private String numeroDocumento;
     private String tipoDocumento;
 
-    // Construtor Padrão
-    public Documentos() {}
-
     public Documentos(Long id, String nome, String numeroDocumento, String tipoDocumento) {
-        super(id, nome); // aproveita o construtor da Pessoa
+        super(nome, id); // aproveita o construtor da Pessoa
         this.numeroDocumento = numeroDocumento;
         this.tipoDocumento = tipoDocumento;
     }
