@@ -1,7 +1,3 @@
-Aqui está uma versão melhorada e mais organizada do seu README, com formatação clara e linguagem mais profissional:
-
----
-
 # 🏡 Sistema de Gestão para Corretoras de Imóveis
 
 ## 📌 Visão Geral
