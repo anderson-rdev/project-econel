@@ -10,7 +10,6 @@ public class Filiacao extends Dominio {
         this.nomeMae = nomeMae;
     }
 
-
     public String getNomePai() {
         return nomePai;
     }

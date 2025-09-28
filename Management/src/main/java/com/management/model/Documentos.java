@@ -5,7 +5,7 @@ public class Documentos extends Dominio {
     private String tipoDocumento;
 
     public Documentos(Long id, String nome, String numeroDocumento, String tipoDocumento) {
-        super(nome, id); // aproveita o construtor da Pessoa
+        super(nome, id);
         this.numeroDocumento = numeroDocumento;
         this.tipoDocumento = tipoDocumento;
     }

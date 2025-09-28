@@ -15,10 +15,11 @@ public class Pessoa extends Dominio{
 
     public Pessoa(Long id, String nome, TipoSanguineo tipoSanguineo, Contatos contato) {
         super(nome, id);
+        this.id = id;
+        this.nome = nome;
         this.tipoSanguineo = tipoSanguineo;
         this.contato = contato;
     }
-
     public Long getId() { return id; }
     public String getNome() { return nome; }
     public List<Endereco> getEnderecos() { return enderecos; }
