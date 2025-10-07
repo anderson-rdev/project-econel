@@ -3,6 +3,7 @@ package com.management.controller;
 import com.management.DTOs.PessoaRequest;
 import com.management.DTOs.PessoaResponse;
 import com.management.model.Pessoa;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -10,20 +11,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/pessoas")
+@RequestMapping("/econel/api/pessoas")
 public class PessoaController {
 
     private final List<Pessoa> pessoas = new ArrayList<>();
 
     // Mapeia PessoaRequest para Pessoa (modelo)
-    private Pessoa mapToModel(PessoaRequest req) {
-        Pessoa p;
-        p = new Pessoa();
-        p.setId(req.getId());
-        p.setNome(req.getNome());
-        p.getEnderecos().clear();
-        p.getTipoSanguineo();
-        p.getContato();
+    @org.jetbrains.annotations.NotNull
+    private Pessoa mapToModel(@NotNull PessoaRequest req) {
+             Pessoa p = new Pessoa(1l,"Anderson Ramos");
+             p.setId(req.getId());
+             p.setNome(req.getNome());
         return p;
     }
 
