@@ -19,18 +19,29 @@ public class Pessoa extends Dominio{
         this.nome = nome;
     }
 
-
-    /*
-    public Pessoa() {
-        super(null, null);
+    public Long getId() {
+        return id;
     }
-     */
+    public String getNome() {
+        return nome;
+    }
+    public List<Endereco> getEnderecos() {
+        return enderecos;
+    }
+    public void setTipoSanguineo(TipoSanguineo tipoSanguineo) {
+        this.tipoSanguineo = tipoSanguineo;
+    }
+    public void setContato(Contatos contato) {
+        this.contato = contato;
+    }
 
-    public Long getId() { return id; }
-    public String getNome() { return nome; }
-    public List<Endereco> getEnderecos() { return enderecos; }
-    public TipoSanguineo getTipoSanguineo() { return tipoSanguineo; }
-    public Contatos getContato() { return contato; }
+    public Contatos getContato() {
+        return contato;
+    }
+
+    public TipoSanguineo getTipoSanguineo() {
+        return tipoSanguineo;
+    }
 
     public void addEndereco(Endereco e) {
         if (e != null) {

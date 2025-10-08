@@ -7,7 +7,7 @@ public class Endereco {
     private String cidade;
     private String estado;
     private String cep;
-    private String tipo; // Residencial, Comercial, etc.
+    private String tipo;   // Residencial, Comercial, etc.
     private Pessoa pessoa; // referência à Pessoa
 
     public Endereco(String rua, String numero, String bairro, String cidade, String estado, String cep, String tipo) {

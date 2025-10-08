@@ -31,8 +31,8 @@ public class PessoaController {
         resp.setId(p.getId());
         resp.setNome(p.getNome());
         resp.setEnderecos(p.getEnderecos());
-        resp.setTipoSanguineo(p.getTipoSanguineo());
-        resp.setContato(p.getContato());
+        // resp.setTipoSanguineo(p.getTipoSanguineo());
+        // resp.setContato(p.getContato());
         return resp;
     }
 

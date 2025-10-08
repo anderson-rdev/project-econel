@@ -3,6 +3,7 @@ package com.management.enums;
 import com.management.Intereface.Descritivel;
 
 public enum TipoSanguineo implements Descritivel {
+    
     A_POSITIVO(1, "A+"),
     A_NEGATIVO(2, "A-"),
     B_POSITIVO(3, "B+"),
