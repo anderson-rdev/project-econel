@@ -60,4 +60,18 @@ public class Pessoa extends Dominio{
                 ", enderecos=" + enderecos +
                 '}';
     }
+
+    public String imprimirResumo() {
+        String enderecoStr = enderecos.isEmpty() ? "não definido" : enderecos.get(0).toString();
+        return "================== Informações Pessoais ==================\n" +
+                "ID:             " + id + "\n" +
+                "Nome:           " + nome + "\n" +
+                "Tipo Sanguíneo: " + (tipoSanguineo != null ? tipoSanguineo.getNome() : "não definido") + "\n" +
+                "Contato:        " + (contato != null ? contato.getNome() : "não definido") + "\n" +
+                "Endereço:       " + enderecoStr + "\n" +
+                "==========================================================";
+    }
+
+
+
 }

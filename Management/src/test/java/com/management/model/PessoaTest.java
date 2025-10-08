@@ -43,7 +43,9 @@ public class PessoaTest {
         assertEquals(1, pessoa.getEnderecos().size());
 
         // Saída: apenas o nome
-        System.out.println(pessoa);
+        // System.out.println(pessoa);
+        System.out.println(pessoa.imprimirResumo());
+
     }
 
 
