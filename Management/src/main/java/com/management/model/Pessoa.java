@@ -1,17 +1,15 @@
 package com.management.model;
 
 import com.management.enums.TipoSanguineo;
-import com.management.enums.Contatos;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class Pessoa extends Dominio{
+public class Pessoa extends Dominio {
     private Long id;
     private String nome;
     private List<Endereco> enderecos = new ArrayList<>();
     private TipoSanguineo tipoSanguineo;
-    private Contatos contato;
+    private Contato contato;  // Agora é do tipo Contato, não enum
 
     public Pessoa(Long id, String nome) {
         super(nome, id);
@@ -22,25 +20,29 @@ public class Pessoa extends Dominio{
     public Long getId() {
         return id;
     }
+
     public String getNome() {
         return nome;
     }
+
     public List<Endereco> getEnderecos() {
         return enderecos;
-    }
-    public void setTipoSanguineo(TipoSanguineo tipoSanguineo) {
-        this.tipoSanguineo = tipoSanguineo;
-    }
-    public void setContato(Contatos contato) {
-        this.contato = contato;
-    }
-
-    public Contatos getContato() {
-        return contato;
     }
 
     public TipoSanguineo getTipoSanguineo() {
         return tipoSanguineo;
+    }
+
+    public void setTipoSanguineo(TipoSanguineo tipoSanguineo) {
+        this.tipoSanguineo = tipoSanguineo;
+    }
+
+    public Contato getContato() {
+        return contato;
+    }
+
+    public void setContato(Contato contato) {
+        this.contato = contato;
     }
 
     public void addEndereco(Endereco e) {
@@ -50,27 +52,39 @@ public class Pessoa extends Dominio{
         }
     }
 
+    /*
     @Override
     public String toString() {
         return "Pessoa{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
-                ", tipoSanguineo=" + tipoSanguineo.getNome() +
-                ", contato=" + contato.getNome() +
+                ", tipoSanguineo=" + (tipoSanguineo != null ? tipoSanguineo.getNome() : "Não informado") +
+                ", contato=" + (contato != null ? contato.getValor() + ": " + contato.getValor() : "Não informado") +
                 ", enderecos=" + enderecos +
                 '}';
     }
+    */
 
     public String imprimirResumo() {
-        String enderecoStr = enderecos.isEmpty() ? "não definido" : enderecos.get(0).toString();
-        return "================== Informações Pessoais ==================\n" +
-                "ID:             " + id + "\n" +
-                "Nome:           " + nome + "\n" +
-                "Tipo Sanguíneo: " + (tipoSanguineo != null ? tipoSanguineo.getNome() : "não definido") + "\n" +
-                "Contato:        " + (contato != null ? contato.getNome() : "não definido") + "\n" +
-                "Endereço:       " + enderecoStr + "\n" +
-                "==========================================================";
+        return String.format(
+                "================== Informações Pessoais ==================\n" +
+                        "ID:             %d\n" +
+                        "Nome:           %s\n" +
+                        "Tipo Sanguíneo: %s\n" +
+                        "Contato:        %s\n" +
+                        "Endereço:       %s\n" +
+                        "==========================================================",
+                id,
+                nome,
+                tipoSanguineo != null ? tipoSanguineo.getNome() : "Não informado",
+                contato != null ? contato.getValor() : "Não informado",
+                enderecos.isEmpty() ? "Nenhum endereço" : enderecos.get(0).toString()
+        );
     }
+
+
+
+
 
 
 

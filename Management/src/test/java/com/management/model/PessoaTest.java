@@ -7,46 +7,42 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PessoaTest {
 
-    @Test
-    public void TesteCadastroPessoa() {
+        @Test
+        public void TesteCadastroPessoa() {
+            // Instancia Pessoa
+            Pessoa pessoa = new Pessoa(1L, "Anderson Ramos");
 
-        // Instancia Pessoa
-        Pessoa pessoa = new Pessoa(1L, "Anderson Ramos");
+            // Instancia do tipo sanguíneo
+            TipoSanguineo tipoSanguineo = TipoSanguineo.O_POSITIVO;
 
-        // Instancia do tipo sanguíneo
-        TipoSanguineo tipoSanguineo = TipoSanguineo.O_POSITIVO;
+            // Instancia do tipo contato + número
+            Contato contato = new Contato(Contatos.CELULAR, "(11) 93930-2000");
 
-        // Instancia do tipo contato
-        Contatos contatos = Contatos.CELULAR;
+            // Criando endereço
+            Endereco endereco = new Endereco(
+                    "Rua das Flores",
+                    "123",
+                    "Centro",
+                    "São Paulo",
+                    "SP",
+                    "01000-000",
+                    "Residencial"
+            );
 
-        // Criando endereço
-        Endereco endereco = new Endereco(
-                "Rua das Flores",
-                "123",
-                "Centro",
-                "São Paulo",
-                "SP",
-                "01000-000",
-                "Residencial"
-        );
+            // Adicionando endereço
+            pessoa.addEndereco(endereco);
 
-        // Adicionando endereço
-        pessoa.addEndereco(endereco);
+            // Setando tipo sanguíneo
+            pessoa.setTipoSanguineo(tipoSanguineo);
 
-        // Setando tipo sanguíneo
-        pessoa.setTipoSanguineo(tipoSanguineo);
+            // Setando contato (agora como objeto Contato)
+            pessoa.setContato(contato);
 
-        // Setando contato
-        pessoa.setContato(contatos);
+            // Verificação
+            assertEquals(1, pessoa.getEnderecos().size());
 
-        // Verificação
-        assertEquals(1, pessoa.getEnderecos().size());
-
-        // Saída: apenas o nome
-        // System.out.println(pessoa);
-        System.out.println(pessoa.imprimirResumo());
-
-    }
-
+            // Exibe resumo
+            System.out.println(pessoa.imprimirResumo());
+        }
 
 }

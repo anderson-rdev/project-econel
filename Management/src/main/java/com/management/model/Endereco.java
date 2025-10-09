@@ -23,11 +23,11 @@ public class Endereco {
     public void setPessoa(Pessoa pessoa) { this.pessoa = pessoa; }
     public Pessoa getPessoa() { return pessoa; }
     public Long getPessoaId() { return pessoa != null ? pessoa.getId() : null; }
-    public String getPessoaNome() { return pessoa != null ? pessoa.getNome() : null; }
+    // public String getPessoaNome() { return pessoa != null ? pessoa.getNome() : null; }
 
     @Override
     public String toString() {
         return tipo + ": " + rua + ", " + numero + " - " + bairro + ", " + cidade + "/" + estado +
-                " (CEP: " + cep + ") [Pessoa: " + getPessoaNome() + "]";
+                " (CEP: " + cep + ")";
     }
 }
