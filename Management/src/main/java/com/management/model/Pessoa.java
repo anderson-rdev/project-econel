@@ -9,7 +9,7 @@ public class Pessoa extends Dominio {
     private String nome;
     private List<Endereco> enderecos = new ArrayList<>();
     private TipoSanguineo tipoSanguineo;
-    private Contato contato;  // Agora é do tipo Contato, não enum
+    private Contato contato;
 
     public Pessoa(Long id, String nome) {
         super(nome, id);
@@ -52,19 +52,6 @@ public class Pessoa extends Dominio {
         }
     }
 
-    /*
-    @Override
-    public String toString() {
-        return "Pessoa{" +
-                "id=" + id +
-                ", nome='" + nome + '\'' +
-                ", tipoSanguineo=" + (tipoSanguineo != null ? tipoSanguineo.getNome() : "Não informado") +
-                ", contato=" + (contato != null ? contato.getValor() + ": " + contato.getValor() : "Não informado") +
-                ", enderecos=" + enderecos +
-                '}';
-    }
-    */
-
     public String imprimirResumo() {
         return String.format(
                 "================== Informações Pessoais ==================\n" +
@@ -81,11 +68,5 @@ public class Pessoa extends Dominio {
                 enderecos.isEmpty() ? "Nenhum endereço" : enderecos.get(0).toString()
         );
     }
-
-
-
-
-
-
 
 }
