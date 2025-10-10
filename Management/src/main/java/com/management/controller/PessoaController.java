@@ -2,51 +2,34 @@ package com.management.controller;
 
 import com.management.DTOs.PessoaRequest;
 import com.management.DTOs.PessoaResponse;
-import com.management.model.Pessoa;
-import org.jetbrains.annotations.NotNull;
+import com.management.service.PessoaService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/econel/api/pessoas")
 public class PessoaController {
 
-    private final List<Pessoa> pessoas = new ArrayList<>();
+    private final PessoaService pessoaService;
 
-    // Mapeia PessoaRequest para Pessoa (modelo)
-    @org.jetbrains.annotations.NotNull
-    private Pessoa mapToModel(@NotNull PessoaRequest req) {
-             Pessoa p = new Pessoa(1l,"Anderson Ramos");
-             p.setId(req.getId());
-             p.setNome(req.getNome());
-        return p;
-    }
-
-    // Mapeia Pessoa para PessoaResponse
-    private PessoaResponse mapToResponse(Pessoa p) {
-        PessoaResponse resp = new PessoaResponse();
-        resp.setId(p.getId());
-        resp.setNome(p.getNome());
-        resp.setEnderecos(p.getEnderecos());
-        // resp.setTipoSanguineo(p.getTipoSanguineo());
-        // resp.setContato(p.getContato());
-        return resp;
+    // Injeção via construtor (melhor para testes e imutabilidade)
+    public PessoaController(PessoaService pessoaService) {
+        this.pessoaService = pessoaService;
     }
 
     @PostMapping
-    public PessoaResponse cadastrarPessoa(@RequestBody PessoaRequest pessoaRequest) {
-        Pessoa pessoa = mapToModel(pessoaRequest);
-        pessoas.add(pessoa);
-        return mapToResponse(pessoa);
+    public ResponseEntity<PessoaResponse> cadastrarPessoa(@Valid @RequestBody PessoaRequest pessoaRequest) {
+        PessoaResponse response = pessoaService.cadastrarPessoa(pessoaRequest);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public List<PessoaResponse> listarPessoas() {
-        return pessoas.stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+    public ResponseEntity<List<PessoaResponse>> listarPessoas() {
+        List<PessoaResponse> pessoas = pessoaService.listarPessoas();
+        return ResponseEntity.ok(pessoas);
     }
 }

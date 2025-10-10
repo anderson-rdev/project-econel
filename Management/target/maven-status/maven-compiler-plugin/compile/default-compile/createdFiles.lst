@@ -1,0 +1,16 @@
+com\management\model\Filiacao.class
+com\management\model\Documentos.class
+com\management\enums\TipoSanguineo.class
+com\management\model\Contato.class
+com\management\DTOs\PessoaRequest.class
+com\management\enums\Contatos.class
+com\management\Intereface\Descritivel.class
+com\management\model\Dominio.class
+com\management\model\Endereco.class
+com\management\controller\PessoaController.class
+com\management\DTOs\PessoaResponse.class
+com\management\model\Pessoa.class
+com\management\service\ManagementApplication.class
+com\management\DTOs\ContatoDTO.class
+com\management\service\PessoaService.class
+com\management\model\Contato$1.class

@@ -2,20 +2,19 @@ package com.management.DTOs;
 
 import com.management.enums.Contatos;
 import com.management.model.Contato;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
-@ApiModel(description = "Representa os dados de contato de uma pessoa")
+@Schema(description = "Representa os dados de contato de uma pessoa")
 public class ContatoDTO extends Contato {
 
-    @ApiModelProperty(value = "Tipo do contato (ex: CELULAR, EMAIL)", example = "CELULAR", required = true)
+    @Schema(description = "Tipo do contato (ex: CELULAR, EMAIL)", example = "CELULAR", required = true)
     @NotNull
     private Contatos tipo;
 
-    @ApiModelProperty(value = "Valor do contato (ex: número de telefone ou email)", example = "(11) 99999-9999", required = true)
+    @Schema(description = "Valor do contato (ex: número de telefone ou email)", example = "(11) 99999-9999", required = true)
     @NotNull
     @Size(min = 10, max = 15)
     private String valor;

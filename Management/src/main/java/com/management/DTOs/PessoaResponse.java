@@ -2,28 +2,27 @@ package com.management.DTOs;
 
 import com.management.enums.TipoSanguineo;
 import com.management.model.Endereco;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@ApiModel(description = "Representa a resposta da API com os dados de uma pessoa")
+@Schema(description = "Representa a resposta da API com os dados de uma pessoa")
 public class PessoaResponse {
 
-    @ApiModelProperty(value = "Identificador único da pessoa", example = "1")
+    @Schema(description = "Identificador único da pessoa", example = "1")
     private Long id;
 
-    @ApiModelProperty(value = "Nome completo da pessoa", example = "Maria Silva")
+    @Schema(description = "Nome completo da pessoa", example = "Maria Silva")
     private String nome;
 
-    @ApiModelProperty(value = "Lista de endereços da pessoa")
+    @Schema(description = "Lista de endereços da pessoa")
     private List<Endereco> enderecos = new ArrayList<>();
 
-    @ApiModelProperty(value = "Tipo sanguíneo da pessoa", example = "O_POSITIVO")
+    @Schema(description = "Tipo sanguíneo da pessoa", example = "O_POSITIVO")
     private TipoSanguineo tipoSanguineo;
 
-    @ApiModelProperty(value = "Informações de contato da pessoa")
+    @Schema(description = "Informações de contato da pessoa")
     private ContatoDTO contato;
 
     // Construtor padrão
