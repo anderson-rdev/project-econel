@@ -1,35 +1,40 @@
 package com.management.controller;
 
-import com.management.DTOs.PessoaRequest;
-import com.management.DTOs.PessoaResponse;
+import com.management.model.Pessoa;
 import com.management.service.PessoaService;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/econel/api/pessoas")
+@RequestMapping("/api/pessoas")
 public class PessoaController {
 
-    private final PessoaService pessoaService;
-
-    // Injeção via construtor (melhor para testes e imutabilidade)
-    public PessoaController(PessoaService pessoaService) {
-        this.pessoaService = pessoaService;
-    }
+    private final PessoaService service = new PessoaService();
 
     @PostMapping
-    public ResponseEntity<PessoaResponse> cadastrarPessoa(@Valid @RequestBody PessoaRequest pessoaRequest) {
-        PessoaResponse response = pessoaService.cadastrarPessoa(pessoaRequest);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    public Pessoa cadastrar(@RequestBody Pessoa pessoa) {
+        return service.cadastrar(pessoa);
+    }
+
+    @PutMapping("/{id}")
+    public Pessoa alterar(@PathVariable Long id, @RequestBody Pessoa pessoa) {
+        return service.alterar(id, pessoa);
+    }
+
+    @GetMapping("/{id}")
+    public Pessoa consultar(@PathVariable Long id) {
+        return service.consultar(id);
     }
 
     @GetMapping
-    public ResponseEntity<List<PessoaResponse>> listarPessoas() {
-        List<PessoaResponse> pessoas = pessoaService.listarPessoas();
-        return ResponseEntity.ok(pessoas);
+    public List<Pessoa> listar() {
+        return service.listar();
+    }
+
+    @DeleteMapping("/{id}")
+    public String excluir(@PathVariable Long id) {
+        boolean removido = service.excluir(id);
+        return removido ? "Pessoa removida com sucesso." : "Pessoa não encontrada.";
     }
 }

@@ -1,48 +1,30 @@
 package com.management.service;
 
-import com.management.DTOs.PessoaRequest;
-import com.management.DTOs.PessoaResponse;
 import com.management.model.Pessoa;
-import org.springframework.stereotype.Service;
+import com.management.Repository.PessoaRepository;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
-@Service
 public class PessoaService {
+    private final PessoaRepository repository = new PessoaRepository();
 
-    private final List<Pessoa> pessoas = Collections.synchronizedList(new ArrayList<>());
-    private final AtomicLong idGenerator = new AtomicLong(0);
-
-    public PessoaResponse cadastrarPessoa(PessoaRequest request) {
-        Pessoa pessoa = mapToModel(request);
-        pessoas.add(pessoa);
-        return mapToResponse(pessoa);
+    public Pessoa cadastrar(Pessoa pessoa) {
+        return repository.salvar(pessoa);
     }
 
-    public List<PessoaResponse> listarPessoas() {
-        synchronized (pessoas) {
-            return pessoas.stream()
-                    .map(this::mapToResponse)
-                    .collect(Collectors.toList());
-        }
+    public Pessoa alterar(Long id, Pessoa pessoa) {
+        return repository.atualizar(id, pessoa);
     }
 
-    private Pessoa mapToModel(PessoaRequest req) {
-        Pessoa p = new Pessoa(idGenerator.incrementAndGet(), req.getNome());
-        // mapear outros campos conforme necessário
-        return p;
+    public Pessoa consultar(Long id) {
+        return repository.buscarPorId(id);
     }
 
-    private PessoaResponse mapToResponse(Pessoa p) {
-        PessoaResponse resp = new PessoaResponse();
-        resp.setId(p.getId());
-        resp.setNome(p.getNome());
-        resp.setEnderecos(p.getEnderecos());
-        // outros campos mapeados
-        return resp;
+    public List<Pessoa> listar() {
+        return repository.listarTodas();
+    }
+
+    public boolean excluir(Long id) {
+        return repository.excluir(id);
     }
 }
