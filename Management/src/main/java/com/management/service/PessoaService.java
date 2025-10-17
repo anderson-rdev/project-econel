@@ -2,9 +2,10 @@ package com.management.service;
 
 import com.management.model.Pessoa;
 import com.management.Repository.PessoaRepository;
-
+import org.springframework.stereotype.Service;
 import java.util.List;
 
+@Service
 public class PessoaService {
     private final PessoaRepository repository = new PessoaRepository();
 
@@ -27,4 +28,5 @@ public class PessoaService {
     public boolean excluir(Long id) {
         return repository.excluir(id);
     }
+
 }

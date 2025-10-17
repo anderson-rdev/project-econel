@@ -1,10 +1,9 @@
 package com.management.DTOs;
 
 import com.management.enums.TipoSanguineo;
-import com.management.model.Endereco;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,24 +11,27 @@ import java.util.List;
 @Schema(description = "Representa os dados necessários para cadastrar ou atualizar uma pessoa")
 public class PessoaRequest {
 
-    @Schema(description = "Identificador da pessoa (utilizado para atualizações)", example = "1")
+    @Schema(description = "Identificador único da pessoa (usado apenas para atualização)", example = "1")
     private Long id;
 
-    @Schema(description = "Nome completo da pessoa", required = true, example = "João da Silva")
-    @NotNull(message = "Nome é obrigatório")
-    @Size(min = 3, max = 100, message = "Nome deve ter entre 3 e 100 caracteres")
+    @Schema(description = "Nome completo da pessoa", example = "João da Silva", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "O nome é obrigatório")
+    @Size(min = 3, max = 100, message = "O nome deve ter entre 3 e 100 caracteres")
     private String nome;
 
-    @Schema(description = "Lista de endereços da pessoa")
-    private List<Endereco> enderecos = new ArrayList<>();
-
-    @Schema(description = "Tipo sanguíneo da pessoa", required = true, example = "A_POSITIVO")
-    @NotNull(message = "Tipo sanguíneo é obrigatório")
+    @Schema(description = "Tipo sanguíneo da pessoa", example = "O_POSITIVO", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "O tipo sanguíneo é obrigatório")
     private TipoSanguineo tipoSanguineo;
 
-    @Schema(description = "Dados de contato da pessoa", required = true)
-    @NotNull(message = "Contato é obrigatório")
+    @Schema(description = "Dados de contato da pessoa", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotNull(message = "Os dados de contato são obrigatórios")
+    @Valid
     private ContatoDTO contato;
+
+    @Schema(description = "Lista de endereços associados à pessoa")
+    @Valid
+    @Size(max = 5, message = "A pessoa pode ter no máximo 5 endereços cadastrados")
+    private List<EnderecoDTO> enderecos = new ArrayList<>();
 
     // Construtor padrão
     public PessoaRequest() {}
@@ -51,14 +53,6 @@ public class PessoaRequest {
         this.nome = nome;
     }
 
-    public List<Endereco> getEnderecos() {
-        return enderecos;
-    }
-
-    public void setEnderecos(List<Endereco> enderecos) {
-        this.enderecos = enderecos != null ? enderecos : new ArrayList<>();
-    }
-
     public TipoSanguineo getTipoSanguineo() {
         return tipoSanguineo;
     }
@@ -73,5 +67,29 @@ public class PessoaRequest {
 
     public void setContato(ContatoDTO contato) {
         this.contato = contato;
+    }
+
+    public List<EnderecoDTO> getEnderecos() {
+        return enderecos;
+    }
+
+    public void setEnderecos(List<EnderecoDTO> enderecos) {
+        this.enderecos = enderecos != null ? enderecos : new ArrayList<>();
+    }
+
+    // -----------------------
+    // Métodos utilitários
+    // -----------------------
+
+    @Schema(hidden = true)
+    public boolean isNew() {
+        return this.id == null;
+    }
+
+    @Schema(hidden = true)
+    public void validateForUpdate() {
+        if (this.id == null) {
+            throw new IllegalArgumentException("O campo 'id' é obrigatório para atualização.");
+        }
     }
 }

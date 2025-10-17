@@ -54,7 +54,7 @@ public class TestePessoaApp {
         // System.out.println(consultada.imprimirResumo());
 
         // 4) Alterar (ex: trocar contato)
-        // consultada.setContato(new Contato(Contatos.EMAIL, "novo.email@teste.com"));
+        // consultada.setContato(new Contato(Contatos.EMAIL, "derson.email@teste.com"));
         // service.alterar(consultada.getId(), consultada);
         // System.out.println("\n=== Após alteração ===");
         // System.out.println(service.consultar(consultada.getId()).imprimirResumo());
