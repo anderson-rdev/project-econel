@@ -1,0 +1,151 @@
+:root {
+  --google-blue: #1a73e8;
+  --text-color: #202124;
+  --light-gray: #f8f9fa;
+  --border-color: #dadce0;
+  --card-bg: #ffffff;
+  --danger-color: #d93025;
+}
+
+/* RESET */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--light-gray);
+  color: var(--text-color);
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* CONTAINER PRINCIPAL */
+.form-container {
+  width: 100%;
+  max-width: 700px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--card-bg);
+}
+
+/* CABEÇALHO */
+.form-header {
+  border-top: 10px solid var(--google-blue);
+  padding: 24px 24px 16px;
+}
+
+.form-header h1 {
+  font-size: 1.8rem;
+  font-weight: 400;
+  margin: 0 0 8px 0;
+}
+
+.form-header p {
+  font-size: 0.95rem;
+  color: #5f6368;
+}
+
+/* CAMPOS */
+.google-form {
+  padding: 0 24px 32px 24px;
+}
+
+.form-field {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 10px;
+  background-color: var(--card-bg);
+}
+
+.form-field label:first-child {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+.form-field.required label:first-child::after {
+  content: " *";
+  color: var(--danger-color);
+}
+
+/* INPUTS */
+input[type="text"],
+input[type="email"],
+select {
+  width: 100%;
+  padding: 10px 0;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 1rem;
+  outline: none;
+  transition: border-bottom-color 0.3s;
+}
+
+input:focus,
+select:focus {
+  border-bottom-color: var(--google-blue);
+  border-bottom-width: 2px;
+}
+
+/* GRUPO DE OPÇÕES */
+.option-group label {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.option-group input {
+  margin-right: 8px;
+  accent-color: var(--google-blue);
+}
+
+/* BOTÕES */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px 0 0 0;
+}
+
+.submit-button,
+.add-button,
+.remove-button {
+  background-color: var(--google-blue);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  margin-top: 10px;
+}
+
+.submit-button:hover,
+.add-button:hover {
+  background-color: #155bb9;
+}
+
+.remove-button {
+  background-color: var(--danger-color);
+  margin-top: 10px;
+}
+
+.remove-button:hover {
+  background-color: #a11f16;
+}
+
+/* RESPONSIVO */
+@media (max-width: 600px) {
+  .form-container {
+    border-radius: 0;
+    box-shadow: none;
+  }
+}

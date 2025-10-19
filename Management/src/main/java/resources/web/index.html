@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Usuário</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="form-container">
+    <header class="form-header">
+        <h1>Cadastro de Usuário</h1>
+        <p>Preencha todos os campos obrigatórios para registrar um novo usuário.</p>
+    </header>
+
+    <form id="userForm" class="google-form">
+
+        <!-- Nome -->
+        <div class="form-field required">
+            <label for="nome">Nome Completo *</label>
+            <input type="text" id="nome" name="nome" placeholder="Ex: Tamara Santos" required>
+        </div>
+
+        <!-- Tipo Sanguíneo -->
+        <div class="form-field required">
+            <label for="tipoSanguineo">Tipo Sanguíneo *</label>
+            <select id="tipoSanguineo" name="tipoSanguineo" required>
+                <option value="">Selecione...</option>
+                <option value="A_POSITIVO">A+</option>
+                <option value="A_NEGATIVO">A-</option>
+                <option value="B_POSITIVO">B+</option>
+                <option value="B_NEGATIVO">B-</option>
+                <option value="O_POSITIVO">O+</option>
+                <option value="O_NEGATIVO">O-</option>
+                <option value="AB_POSITIVO">AB+</option>
+                <option value="AB_NEGATIVO">AB-</option>
+            </select>
+        </div>
+
+        <!-- Contato -->
+        <div class="form-field required">
+            <label>Contato *</label>
+
+            <div class="option-group">
+                <label><input type="radio" name="tipoContato" value="EMAIL" required> E-mail</label>
+                <label><input type="radio" name="tipoContato" value="TELEFONE"> Telefone</label>
+            </div>
+
+            <input type="text" id="valorContato" name="valorContato" placeholder="Ex: anderson@email.com" required>
+        </div>
+
+        <!-- Endereços -->
+        <div id="enderecosContainer">
+            <div class="form-field endereco-field">
+                <label>Endereço</label>
+                <input type="text" name="rua" placeholder="Rua" required>
+                <input type="text" name="numero" placeholder="Número" required>
+                <input type="text" name="bairro" placeholder="Bairro" required>
+                <input type="text" name="cidade" placeholder="Cidade" required>
+                <input type="text" name="estado" placeholder="Estado" maxlength="2" required>
+                <input type="text" name="cep" placeholder="CEP" required>
+                <select name="tipo" required>
+                    <option value="Residencial">Residencial</option>
+                    <option value="Comercial">Comercial</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="add-button" onclick="adicionarEndereco()">+ Adicionar outro endereço</button>
+        </div>
+
+        <!-- Botão Enviar -->
+        <div class="form-actions">
+            <button type="submit" class="submit-button">Cadastrar Usuário</button>
+        </div>
+    </form>
+</div>
+
+<!-- Script -->
+<script>
+    function adicionarEndereco() {
+      const container = document.getElementById('enderecosContainer');
+      const novoEndereco = document.createElement('div');
+      novoEndereco.classList.add('form-field', 'endereco-field');
+      novoEndereco.innerHTML = `
+        <label>Endereço</label>
+        <input type="text" name="rua" placeholder="Rua" required>
+        <input type="text" name="numero" placeholder="Número" required>
+        <input type="text" name="bairro" placeholder="Bairro" required>
+        <input type="text" name="cidade" placeholder="Cidade" required>
+        <input type="text" name="estado" placeholder="Estado" maxlength="2" required>
+        <input type="text" name="cep" placeholder="CEP" required>
+        <select name="tipo" required>
+          <option value="Residencial">Residencial</option>
+          <option value="Comercial">Comercial</option>
+        </select>
+        <button type="button" class="remove-button" onclick="removerEndereco(this)">Remover</button>
+      `;
+      container.appendChild(novoEndereco);
+    }
+
+    function removerEndereco(botao) {
+      botao.parentElement.remove();
+    }
+
+    // Envio do formulário
+    document.getElementById("userForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const nome = document.getElementById("nome").value;
+      const tipoSanguineo = document.getElementById("tipoSanguineo").value;
+      const tipoContato = document.querySelector('input[name="tipoContato"]:checked').value;
+      const valorContato = document.getElementById("valorContato").value;
+
+      const enderecos = [];
+      document.querySelectorAll("#enderecosContainer .endereco-field").forEach((endereco) => {
+        enderecos.push({
+          rua: endereco.querySelector('[name="rua"]').value,
+          numero: endereco.querySelector('[name="numero"]').value,
+          bairro: endereco.querySelector('[name="bairro"]').value,
+          cidade: endereco.querySelector('[name="cidade"]').value,
+          estado: endereco.querySelector('[name="estado"]').value,
+          cep: endereco.querySelector('[name="cep"]').value,
+          tipo: endereco.querySelector('[name="tipo"]').value
+        });
+      });
+
+      const usuario = {
+        nome,
+        tipoSanguineo,
+        contato: { tipo: tipoContato, valor: valorContato },
+        enderecos
+      };
+
+      console.log("JSON gerado:", JSON.stringify(usuario, null, 2));
+
+      alert("Usuário cadastrado com sucesso! Veja o JSON no console.");
+    });
+</script>
+
+</body>
+</html>
