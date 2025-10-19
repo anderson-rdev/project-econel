@@ -1,7 +1,9 @@
 package com.management.controller;
 
+import com.management.DTOs.MensagemResponse;
 import com.management.DTOs.PessoaRequest;
 import com.management.DTOs.PessoaResponse;
+import com.management.exception.ResourceNotFoundException;
 import com.management.service.PessoaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -66,4 +68,23 @@ public class PessoaController {
 
     }
 
+    // =======================================
+    // Excluir (DELETE)
+    // =======================================
+    @DeleteMapping("/{id}")
+    public ResponseEntity<MensagemResponse> deletarPessoa(@PathVariable Long id) {
+        // tenta deletar, lança exceção caso não exista
+        pessoaService.excluir(id);
+
+        MensagemResponse response = new MensagemResponse("Pessoa deletada com sucesso!");
+        return ResponseEntity.ok(response);
+    }
+
+    // Optional: tratamento global de exceção
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<MensagemResponse> handleNotFound(ResourceNotFoundException ex) {
+        MensagemResponse response = new MensagemResponse(ex.getMessage());
+        return ResponseEntity.status(404).body(response);
+    }
 }
+

@@ -67,10 +67,19 @@ public class PessoaService {
         return converterParaResponse(pessoa);
     }
 
+    // =======================================
+    // Excluir (DELETE)
+    // =======================================
+    public void excluir(Long id) {
+        Pessoa pessoa = pessoas.remove(id);
+        if (pessoa == null) {
+            throw new ResourceNotFoundException("Pessoa com ID " + id + " não encontrada");
+        }
+    }
+
     // =====================================================
     // Conversores auxiliares (DTO ↔ Entidade)
     // =====================================================
-
     private Contato converterContato(ContatoDTO dto) {
         if (dto == null) return null;
         Contato contato = new Contato(dto.getTipo(), dto.getValor());
