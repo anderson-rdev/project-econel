@@ -4,6 +4,11 @@ public class Dominio {
     private Long id;
     private String nome;
 
+    // Construtor vazio necessário para frameworks
+    public Dominio() {
+    }
+
+    // Construtor com parâmetros
     public Dominio(String nome, Long id) {
         this.nome = nome;
         this.id = id;

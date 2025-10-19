@@ -1,5 +1,9 @@
 package com.management.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
 public class Endereco {
     private String rua;
     private String numero;
@@ -8,6 +12,9 @@ public class Endereco {
     private String estado;
     private String cep;
     private String tipo;   // Residencial, Comercial, etc.
+    @ManyToOne
+    @JoinColumn(name = "pessoa_id")
+    @JsonBackReference
     private Pessoa pessoa; // referência à Pessoa
 
     public Endereco(String rua, String numero, String bairro, String cidade, String estado, String cep, String tipo) {
@@ -20,10 +27,11 @@ public class Endereco {
         this.tipo = tipo;
     }
 
+    public Endereco() {}
+
     public void setPessoa(Pessoa pessoa) { this.pessoa = pessoa; }
     public Pessoa getPessoa() { return pessoa; }
     public Long getPessoaId() { return pessoa != null ? pessoa.getId() : null; }
-    // public String getPessoaNome() { return pessoa != null ? pessoa.getNome() : null; }
 
     @Override
     public String toString() {

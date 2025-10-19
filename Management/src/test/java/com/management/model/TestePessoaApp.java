@@ -1,67 +1,55 @@
 package com.management.model;
 
-import com.management.enums.TipoSanguineo;
 import com.management.enums.Contatos;
-import com.management.model.Contato;
-import com.management.model.Endereco;
-import com.management.model.Pessoa;
-import com.management.service.PessoaService;
+import com.management.enums.TipoSanguineo;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestePessoaApp {
-    public static void main(String[] args) {
-        PessoaService service = new PessoaService();
 
-        // Instancia Pessoa
-        Pessoa pessoa = new Pessoa(2l, "Anderson Nascimento");
+    private Pessoa pessoa;
 
-        // Instancia do tipo sanguíneo
-        TipoSanguineo tipoSanguineo = TipoSanguineo.O_POSITIVO;
+    @BeforeEach
+    void setUp() {
+        pessoa = new Pessoa();
+        pessoa.setId(1L);
+        pessoa.setNome("Anderson Ramos");
+        pessoa.setTipoSanguineo(TipoSanguineo.A_POSITIVO);
+    }
 
-        // Instancia do contato (supondo enum Contatos e construtor Contato(tipo, valor))
-        Contato contato = new Contato(Contatos.CELULAR, "(11) 93930-2000");
-
-        // Criando endereço
-        Endereco endereco = new Endereco(
-                "Rua das Flores",
-                "123",
-                "Centro",
-                "São Paulo",
-                "SP",
-                "01000-000",
-                "Residencial"
-        );
-
-        // Adicionando endereço
+    @Test
+    void ResumoComEndereco() {
+        Endereco endereco = new Endereco("Rua das Flores", "608", "Centro", "São Paulo", "SP", "01000-000", "Residencial");
         pessoa.addEndereco(endereco);
 
-        // Setando tipo sanguíneo
-        pessoa.setTipoSanguineo(tipoSanguineo);
+        String resumo = pessoa.imprimirResumo();
 
-        // Setando contato
-        pessoa.setContato(contato);
+        // Exibe o resumo completo
+        exibirResumoCompleto(pessoa);
 
-        // 1) Cadastrar
-        Pessoa salvo = service.cadastrar(pessoa);
-        System.out.println("Pessoa cadastrada (ID atribuído): " + salvo.getId());
-
-        // 2) Listar
-        System.out.println("\n=== Lista ===");
-        service.listar().forEach(p -> System.out.println(p.imprimirResumo()));
-
-        // 3) Consultar por ID
-        // System.out.println("\n=== Consulta ID ===");
-        // Pessoa consultada = service.consultar(salvo.getId());
-        // System.out.println(consultada.imprimirResumo());
-
-        // 4) Alterar (ex: trocar contato)
-        // consultada.setContato(new Contato(Contatos.EMAIL, "derson.email@teste.com"));
-        // service.alterar(consultada.getId(), consultada);
-        // System.out.println("\n=== Após alteração ===");
-        // System.out.println(service.consultar(consultada.getId()).imprimirResumo());
-
-        // 5) Excluir
-        // service.excluir(consultada.getId());
-        // System.out.println("\n=== Após exclusão ===");
-        // service.listar().forEach(p -> System.out.println(p.imprimirResumo()));
+        assertTrue(resumo.contains("Rua das Flores"), "Resumo deve conter o endereço adicionado");
     }
+
+    // Método auxiliar para imprimir o resumo completo
+    private void exibirResumoCompleto(Pessoa pessoa) {
+        System.out.println("=== RESUMO DA PESSOA ===");
+        System.out.println("ID: " + pessoa.getId());
+        System.out.println("Nome: " + pessoa.getNome());
+        System.out.println("Tipo Sanguíneo: " + pessoa.getTipoSanguineo());
+
+        if (pessoa.getContato() != null) {
+            System.out.println("Contato: " + pessoa.getContato().getTipo() + " - " + pessoa.getContato().getValor());
+        }
+
+        if (pessoa.getEnderecos() != null && !pessoa.getEnderecos().isEmpty()) {
+            System.out.println("Endereços:");
+            for (Endereco e : pessoa.getEnderecos()) {
+                System.out.println("  " + e.toString()); // usa o seu toString()
+            }
+        }
+        System.out.println("========================\n");
+    }
+
 }
