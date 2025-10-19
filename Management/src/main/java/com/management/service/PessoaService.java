@@ -20,12 +20,9 @@ public class PessoaService {
     private final Map<Long, Pessoa> pessoas = new HashMap<>();
     private final AtomicLong idGenerator = new AtomicLong(1);
 
-    /**
-     * Cadastra uma nova pessoa a partir do DTO de requisição.
-     *
-     * @param request objeto contendo os dados da pessoa
-     * @return DTO de resposta com os dados persistidos
-     */
+    // =======================================
+    // Criar (POST)
+    // =======================================
     public PessoaResponse cadastrar(PessoaRequest request) {
         Pessoa pessoa = new Pessoa();
         pessoa.setId(idGenerator.getAndIncrement());
@@ -39,17 +36,34 @@ public class PessoaService {
         // System.out.println("Request Endereços: " + request.getEnderecos());
     }
 
-    /**
-     * Busca uma pessoa pelo ID.
-     *
-     * @param id identificador da pessoa
-     * @return DTO de resposta
-     */
+    // =======================================
+    // Consultar (GET) || Id
+    // =======================================
     public PessoaResponse buscarPorId(Long id) {
         Pessoa pessoa = pessoas.get(id);
         if (pessoa == null) {
             throw new ResourceNotFoundException("Pessoa com ID " + id + " não encontrada");
         }
+        return converterParaResponse(pessoa);
+    }
+
+    // =======================================
+    // Alterar (PUT)
+    // =======================================
+    public PessoaResponse alterar(Long id, PessoaRequest request) {
+        Pessoa pessoa = pessoas.get(id);
+        if (pessoa == null) {
+            throw new ResourceNotFoundException("Pessoa com Id " + id + "não encontrado(a). ");
+        }
+
+        if (request.getNome() != null) pessoa.setNome(request.getNome());
+        if (request.getTipoSanguineo() != null) pessoa.setTipoSanguineo(request.getTipoSanguineo());
+        if (request.getContato() != null) pessoa.setContato(converterContato(request.getContato()));
+        if (request.getEnderecos() != null && !request.getEnderecos().isEmpty()) {
+            pessoa.setEnderecos(converterEnderecos(request.getEnderecos()));
+        }
+
+        pessoas.put(id, pessoa);
         return converterParaResponse(pessoa);
     }
 

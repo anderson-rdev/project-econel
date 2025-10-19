@@ -11,7 +11,7 @@ public class PessoaResponse {
     private String nome;
     private TipoSanguineo tipoSanguineo;
     private ContatoDTO contato;
-    @JsonProperty("endereco")
+    @JsonProperty("enderecos")
     private List<EnderecoDTO> endereco = new ArrayList<>();
 
     // Getters e Setters
@@ -27,10 +27,10 @@ public class PessoaResponse {
     public ContatoDTO getContato() { return contato; }
     public void setContato(ContatoDTO contato) { this.contato = contato; }
 
-    @JsonProperty("endereco")
+    @JsonProperty("enderecos")
     public List<EnderecoDTO> getEnderecos() { return endereco; }
 
-    @JsonProperty("endereco")
+    @JsonProperty("enderecos")
     public void setEnderecos(List<EnderecoDTO> endereco) {
         this.endereco = endereco != null ? endereco : new ArrayList<>();
     }

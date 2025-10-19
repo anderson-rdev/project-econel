@@ -32,7 +32,7 @@ public class PessoaRequest {
     @Schema(description = "Lista de endereços associados à pessoa")
     @Valid
     @Size(max = 5, message = "A pessoa pode ter no máximo 5 endereços cadastrados")
-    @JsonProperty("endereco")
+    @JsonProperty("enderecos")
     private List<EnderecoDTO> endereco = new ArrayList<>();
 
     public PessoaRequest() {}
@@ -46,8 +46,8 @@ public class PessoaRequest {
     public void setTipoSanguineo(TipoSanguineo tipoSanguineo) { this.tipoSanguineo = tipoSanguineo; }
     public ContatoDTO getContato() { return contato; }
     public void setContato(ContatoDTO contato) { this.contato = contato; }
-    @JsonProperty("endereco")
+    @JsonProperty("enderecos")
     public List<EnderecoDTO> getEnderecos() { return endereco; }
-    @JsonProperty("endereco")
+    @JsonProperty("enderecos")
     public void setEnderecos(List<EnderecoDTO> endereco) { this.endereco = endereco != null ? endereco : new ArrayList<>(); }
 }
