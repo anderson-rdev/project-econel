@@ -2,7 +2,7 @@ package com.management.enums;
 
 import com.management.Intereface.Descritivel;
 
-public enum Contatos implements Descritivel {
+public enum TipoContato implements Descritivel {
     EMAIL(1, "E-mail"),
     TELEFONE(2, "Telefone"),
     CELULAR(3, "Celular"),
@@ -11,7 +11,7 @@ public enum Contatos implements Descritivel {
     private final int id;
     private final String nome;
 
-    Contatos(int id, String nome) {
+    TipoContato(int id, String nome) {
         this.id = id;
         this.nome = nome;
     }

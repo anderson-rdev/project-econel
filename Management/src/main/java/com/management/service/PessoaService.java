@@ -1,100 +1,123 @@
 package com.management.service;
 
-import com.management.model.Pessoa;
-import com.management.repository.PessoaRepository;
+import com.management.DTOs.*;
+import com.management.enums.TipoEndereco;
 import com.management.exception.ResourceNotFoundException;
+import com.management.model.*;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 /**
- * Serviço responsável por aplicar as regras de negócio relacionadas à entidade Pessoa.
- *
- * <p>Esta classe atua como intermediária entre o controlador e o repositório, garantindo
- * a separação de responsabilidades e facilitando futuras manutenções.</p>
+ * Serviço responsável por gerenciar operações de Pessoa.
  */
 @Service
 public class PessoaService {
 
-    private final PessoaRepository repository;
+    // Simula um repositório em memória (modo de teste)
+    private final Map<Long, Pessoa> pessoas = new HashMap<>();
+    private final AtomicLong idGenerator = new AtomicLong(1);
 
     /**
-     * Construtor com injeção de dependência do repositório de pessoas.
+     * Cadastra uma nova pessoa a partir do DTO de requisição.
      *
-     * @param repository O repositório responsável pelo acesso a dados de Pessoa.
+     * @param request objeto contendo os dados da pessoa
+     * @return DTO de resposta com os dados persistidos
      */
-    public PessoaService(PessoaRepository repository) {
-        this.repository = repository;
+    public PessoaResponse cadastrar(PessoaRequest request) {
+        Pessoa pessoa = new Pessoa();
+        pessoa.setId(idGenerator.getAndIncrement());
+        pessoa.setNome(request.getNome());
+        pessoa.setTipoSanguineo(request.getTipoSanguineo());
+        pessoa.setContato(converterContato(request.getContato()));
+        pessoa.setEnderecos(converterEnderecos(request.getEnderecos()));
+
+        pessoas.put(pessoa.getId(), pessoa);
+        return converterParaResponse(pessoa);
+        // System.out.println("Request Endereços: " + request.getEnderecos());
     }
 
     /**
-     * Cadastra uma nova pessoa.
+     * Busca uma pessoa pelo ID.
      *
-     * @param pessoa A pessoa a ser cadastrada.
-     * @return A pessoa criada com o ID gerado.
+     * @param id identificador da pessoa
+     * @return DTO de resposta
      */
-    public Pessoa cadastrar(Pessoa pessoa) {
-        // Vincula cada endereço à pessoa antes de salvar
-        if (pessoa.getEnderecos() != null) {
-            pessoa.getEnderecos().forEach(endereco -> endereco.setPessoa(pessoa));
-        }
-        return repository.salvar(pessoa);
-    }
-
-    /**
-     * Atualiza os dados de uma pessoa existente.
-     *
-     * @param id O ID da pessoa a ser atualizada.
-     * @param pessoa A pessoa com os dados atualizados.
-     * @return A pessoa atualizada.
-     * @throws ResourceNotFoundException se o ID informado não existir.
-     */
-    public Pessoa alterar(Long id, Pessoa pessoa) {
-        Pessoa existente = repository.buscarPorId(id);
-        if (existente == null) {
-            throw new ResourceNotFoundException("Pessoa não encontrada com o ID: " + id);
-        }
-        // Vincula endereços à pessoa atualizada
-        if (pessoa.getEnderecos() != null) {
-            pessoa.getEnderecos().forEach(endereco -> endereco.setPessoa(pessoa));
-        }
-        return repository.atualizar(id, pessoa);
-    }
-
-    /**
-     * Consulta uma pessoa pelo seu ID.
-     *
-     * @param id O ID da pessoa.
-     * @return A pessoa encontrada.
-     * @throws ResourceNotFoundException se o ID informado não existir.
-     */
-    public Pessoa consultar(Long id) {
-        Pessoa pessoa = repository.buscarPorId(id);
+    public PessoaResponse buscarPorId(Long id) {
+        Pessoa pessoa = pessoas.get(id);
         if (pessoa == null) {
-            throw new ResourceNotFoundException("Pessoa não encontrada com o ID: " + id);
+            throw new ResourceNotFoundException("Pessoa com ID " + id + " não encontrada");
         }
-        return pessoa;
+        return converterParaResponse(pessoa);
     }
 
-    /**
-     * Lista todas as pessoas cadastradas.
-     *
-     * @return Uma lista de pessoas (pode estar vazia).
-     */
-    public List<Pessoa> listar() {
-        return repository.listarTodas();
+    // =====================================================
+    // Conversores auxiliares (DTO ↔ Entidade)
+    // =====================================================
+
+    private Contato converterContato(ContatoDTO dto) {
+        if (dto == null) return null;
+        Contato contato = new Contato(dto.getTipo(), dto.getValor());
+        return contato;
     }
 
-    /**
-     * Exclui uma pessoa com base no seu ID.
-     *
-     * @param id O ID da pessoa a ser excluída.
-     * @throws ResourceNotFoundException se o ID informado não existir.
-     */
-    public void excluir(Long id) {
-        boolean removida = repository.excluir(id);
-        if (!removida) {
-            throw new ResourceNotFoundException("Pessoa não encontrada com o ID: " + id);
-        }
+    private List<Endereco> converterEnderecos(List<EnderecoDTO> dtos) {
+        if (dtos == null) return new ArrayList<>();
+        return dtos.stream().map(dto -> {
+            Endereco e = new Endereco();
+            e.setRua(dto.getRua());
+            e.setNumero(dto.getNumero());
+            e.setBairro(dto.getBairro());
+            e.setCidade(dto.getCidade());
+            e.setEstado(dto.getEstado());
+            e.setCep(dto.getCep());
+            e.setTipo(dto.getTipo());
+            return e;
+        }).collect(Collectors.toList());
     }
+
+    private EnderecoDTO converterEnderecoParaDTO(Endereco endereco) {
+        if (endereco == null) return null;
+
+        EnderecoDTO dto = new EnderecoDTO();
+        dto.setRua(endereco.getRua());
+        dto.setNumero(endereco.getNumero());
+        dto.setBairro(endereco.getBairro());
+        dto.setCidade(endereco.getCidade());
+        dto.setEstado(endereco.getEstado());
+        dto.setCep(endereco.getCep());
+        dto.setTipo(endereco.getTipo());
+        return dto;
+    }
+
+    private PessoaResponse converterParaResponse(Pessoa pessoa) {
+        if (pessoa == null) return null;
+
+        PessoaResponse response = new PessoaResponse();
+        response.setId(pessoa.getId());
+        response.setNome(pessoa.getNome());
+        response.setTipoSanguineo(pessoa.getTipoSanguineo());
+
+        // Contato
+        if (pessoa.getContato() != null) {
+            ContatoDTO contatoDTO = new ContatoDTO();
+            contatoDTO.setTipo(pessoa.getContato().getTipo());
+            contatoDTO.setValor(pessoa.getContato().getValor());
+            response.setContato(contatoDTO);
+        }
+
+        // Endereços
+        List<EnderecoDTO> enderecosDTO = new ArrayList<>();
+        if (pessoa.getEnderecos() != null) {
+            for (Endereco e : pessoa.getEnderecos()) {
+                enderecosDTO.add(converterEnderecoParaDTO(e));
+            }
+        }
+        response.setEnderecos(enderecosDTO);
+
+        return response;
+    }
+
 }

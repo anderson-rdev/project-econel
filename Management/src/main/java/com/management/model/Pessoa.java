@@ -1,10 +1,11 @@
 package com.management.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.management.enums.TipoSanguineo;
 import java.util.ArrayList;
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonProperty;
+// Removido @JsonProperty("endereco") - não é necessário
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
@@ -15,8 +16,10 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
+import jakarta.persistence.Entity; // IMPORTANTE: Faltava @Entity
 
-
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@Entity // 1. Faltava a anotação @Entity
 @Table(name = "pessoa")
 public class Pessoa extends Dominio {
 
@@ -26,10 +29,14 @@ public class Pessoa extends Dominio {
 
     private String nome;
 
-    @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference
-    @JsonProperty("endereco") // opcional, para mapear nome JSON "endereco"
-    private List<Endereco> enderecos = new ArrayList<>();
+    // 2. CORREÇÃO PRINCIPAL: Anotação @OneToMany correta
+    @OneToMany(
+            mappedBy = "pessoa",       // "pessoa" é o nome do campo em Endereco.java
+            cascade = CascadeType.ALL, // Salva/atualiza/deleta endereços junto com a pessoa
+            fetch = FetchType.EAGER,   // Carrega os endereços junto com a pessoa
+            orphanRemoval = true       // Remove endereços do banco se forem removidos da lista
+    )
+    private List<Endereco> endereco = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private TipoSanguineo tipoSanguineo;
@@ -38,7 +45,7 @@ public class Pessoa extends Dominio {
     private Contato contato;
 
     public Pessoa() {
-        this.enderecos = new ArrayList<>();
+        this.endereco = new ArrayList<>();
     }
 
     // getters, setters
@@ -63,13 +70,19 @@ public class Pessoa extends Dominio {
     }
 
     public List<Endereco> getEnderecos() {
-        return enderecos;
+        return endereco;
     }
 
+    // 3. Você precisa de um setEnderecos para o Jackson funcionar
+    public void setEnderecos(List<Endereco> enderecos) {
+        this.endereco = enderecos;
+    }
+
+    // Este método está ótimo para manter a consistência
     public void addEndereco(Endereco e) {
         if (e != null) {
             e.setPessoa(this); // vínculo do endereço com a pessoa
-            this.enderecos.add(e); // adiciona à lista
+            this.endereco.add(e); // adiciona à lista
         }
     }
 
@@ -89,7 +102,7 @@ public class Pessoa extends Dominio {
         this.contato = contato;
     }
 
-    // Imprime o resumo
+    // ... (método imprimirResumo) ...
     public String imprimirResumo() {
         return String.format(
                 "================== Informações Pessoais ==================\n" +
@@ -103,10 +116,7 @@ public class Pessoa extends Dominio {
                 nome,
                 tipoSanguineo != null ? tipoSanguineo.getNome() : "Não informado",
                 contato != null ? contato.getValor() : "Não informado",
-                enderecos.isEmpty() ? "Nenhum endereço" : enderecos.get(0).toString()
+                endereco.isEmpty() ? "Nenhum endereço" : endereco.get(0).toString()
         );
-
     }
-
-    }
-
+}

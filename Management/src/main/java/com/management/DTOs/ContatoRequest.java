@@ -2,17 +2,10 @@ package com.management.DTOs;
 
 import com.management.enums.TipoContato;
 
-// DTO para os dados de contato que saem na RESPOSTA
-public class ContatoDTO {
+// DTO para os dados de contato que vêm na request
+public class ContatoRequest {
     private TipoContato tipo;
     private String valor;
-
-    public ContatoDTO() {} // Construtor padrão
-
-    public ContatoDTO(TipoContato tipo, String valor) {
-        this.tipo = tipo;
-        this.valor = valor;
-    }
 
     // Getters e Setters
     public TipoContato getTipo() { return tipo; }
