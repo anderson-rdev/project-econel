@@ -1,49 +1,38 @@
-# 🏡 Sistema de Gestão para Corretoras de Imóveis
+# 💡 Econel – Sistema de Estimativa de Custos e Economia Doméstica
 
 ## 📌 Visão Geral
 
-O **Sistema de Gestão para Corretoras de Imóveis** foi desenvolvido para simplificar e otimizar as operações do dia a dia de imobiliárias.
-Ele disponibiliza um conjunto de ferramentas que auxiliam no **gerenciamento de imóveis**, na **interação com clientes** e no **acompanhamento das movimentações de estoque**, abrangendo desde o cadastro de novas propriedades até a exibição de opções disponíveis para venda.
+**Econel** é um sistema desenvolvido para ajudar usuários a entenderem melhor seus padrões de consumo e identificar oportunidades de economia. Através de um fluxo simples — **login, formulário e relatório** — o sistema coleta informações do usuário, analisa os dados e gera relatórios personalizados com estimativas de custo e dicas de como economizar.
+
+O foco é oferecer uma experiência simples, rápida e com impacto direto no bolso do usuário, promovendo consciência e controle financeiro.
 
 ---
 
 ## ⚙️ Funcionalidades
 
-### 📂 Menu Principal
+### 🔐 Tela de Login
 
-* Acesso rápido e organizado a todas as áreas do sistema.
+* Acesso seguro ao sistema com autenticação de usuário.
+* Interface intuitiva com opção de cadastro e recuperação de senha.
 
-### 📝 Tela de Cadastro de Imóveis
+### 📋 Formulário de Perfil de Consumo
 
-* Registro de novos imóveis com informações detalhadas:
+* Coleta de informações essenciais para análise, como:
 
-  * Endereço
-  * Valor
-  * Fotos
-  * Dados de contato do proprietário
+  * Quantidade de pessoas na residência
+  * Equipamentos eletrônicos utilizados
+  * Horários de maior consumo
+  * Histórico de faturas (opcional)
+  * Preferências ou limitações de economia
 
-### 🏘️ Exibição de Imóveis
+* Formulário dividido em etapas para facilitar o preenchimento.
 
-* Lista clara e intuitiva dos imóveis disponíveis para venda.
-* Apresentação com detalhes que facilitam a análise e escolha pelos clientes.
+### 📊 Relatórios de Estimativa e Economia
 
-### 🤝 Gerenciamento de Contatos
+* Geração de relatório personalizado com base nas respostas do formulário.
+* Estimativas de custo mensal com base no perfil informado.
+* Sugestões práticas de economia:
 
-* Registro e acompanhamento das interações com clientes.
-* Controle de agendamentos de visita e propostas realizadas.
-
-### 📊 Movimentações de Estoque
-
-* Gerenciamento do status dos imóveis:
-
-  * Disponível
-  * Vendido
-  * Reservado
-
----
-
-## 🚀 Benefícios
-
-* Organização centralizada das informações.
-* Aumento da produtividade da corretora.
-* Melhor experiência para clientes e corretores.
+  * Redução de consumo em horários de pico
+  * Substituição de equipamentos por versões mais econômicas
+  * Acompanhamento da evolução do consumo
