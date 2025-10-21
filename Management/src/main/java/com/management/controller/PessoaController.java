@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 // Para consistência, usei "Usuários" como você definiu na Tag e no RequestMapping.
 @Tag(name = "Usuários", description = "Operações para gerenciamento de usuários")
 @RestController
-@RequestMapping("/api/v1/usuarios")
+    @RequestMapping("/api/v1/usuarios")
 public class PessoaController {
 
     private final PessoaService pessoaService;

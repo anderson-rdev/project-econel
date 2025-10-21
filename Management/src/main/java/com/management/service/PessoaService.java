@@ -1,49 +1,47 @@
 package com.management.service;
 
 import com.management.DTOs.*;
-import com.management.enums.TipoEndereco;
 import com.management.exception.ResourceNotFoundException;
 import com.management.model.*;
+import com.management.repository.PessoaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 /**
  * Serviço responsável por gerenciar operações de Pessoa.
  */
 @Service
+@Transactional
 public class PessoaService {
 
-    // Simula um repositório em memória (modo de teste)
-    private final Map<Long, Pessoa> pessoas = new HashMap<>();
-    private final AtomicLong idGenerator = new AtomicLong(1);
+    @Autowired
+    private PessoaRepository pessoaRepository;
 
     // =======================================
-    // Criar (POST)
+    // Cadastrar (POST)
     // =======================================
     public PessoaResponse cadastrar(PessoaRequest request) {
-        Pessoa pessoa = new Pessoa();
-        pessoa.setId(idGenerator.getAndIncrement());
-        pessoa.setNome(request.getNome());
-        pessoa.setTipoSanguineo(request.getTipoSanguineo());
-        pessoa.setContato(converterContato(request.getContato()));
-        pessoa.setEnderecos(converterEnderecos(request.getEnderecos()));
+        Pessoa pessoa = converterRequestParaEntidade(request);
 
-        pessoas.put(pessoa.getId(), pessoa);
-        return converterParaResponse(pessoa);
-        // System.out.println("Request Endereços: " + request.getEnderecos());
+        // Garante a referência bidirecional Pessoa ↔ Endereço
+        if (pessoa.getEnderecos() != null) {
+            pessoa.getEnderecos().forEach(e -> e.setPessoa(pessoa));
+        }
+
+        Pessoa salva = pessoaRepository.save(pessoa);
+        return converterParaResponse(salva);
     }
 
     // =======================================
-    // Consultar (GET) || Id
+    // Consultar (GET)
     // =======================================
     public PessoaResponse buscarPorId(Long id) {
-        Pessoa pessoa = pessoas.get(id);
-        if (pessoa == null) {
-            throw new ResourceNotFoundException("Pessoa com ID " + id + " não encontrada");
-        }
+        Pessoa pessoa = pessoaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Pessoa com ID " + id + " não encontrada"));
         return converterParaResponse(pessoa);
     }
 
@@ -51,38 +49,65 @@ public class PessoaService {
     // Alterar (PUT)
     // =======================================
     public PessoaResponse alterar(Long id, PessoaRequest request) {
-        Pessoa pessoa = pessoas.get(id);
-        if (pessoa == null) {
-            throw new ResourceNotFoundException("Pessoa com Id " + id + "não encontrado(a). ");
-        }
+        Pessoa pessoa = pessoaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Pessoa com ID " + id + " não encontrada"));
 
         if (request.getNome() != null) pessoa.setNome(request.getNome());
         if (request.getTipoSanguineo() != null) pessoa.setTipoSanguineo(request.getTipoSanguineo());
         if (request.getContato() != null) pessoa.setContato(converterContato(request.getContato()));
-        if (request.getEnderecos() != null && !request.getEnderecos().isEmpty()) {
-            pessoa.setEnderecos(converterEnderecos(request.getEnderecos()));
+
+        if (request.getEnderecos() != null) {
+            List<Endereco> novosEnderecos = converterEnderecos(request.getEnderecos());
+            novosEnderecos.forEach(e -> e.setPessoa(pessoa)); // vínculo
+            pessoa.getEnderecos().clear();
+            pessoa.getEnderecos().addAll(novosEnderecos);
         }
 
-        pessoas.put(id, pessoa);
-        return converterParaResponse(pessoa);
+        Pessoa atualizada = pessoaRepository.save(pessoa);
+        return converterParaResponse(atualizada);
     }
 
     // =======================================
     // Excluir (DELETE)
     // =======================================
     public void excluir(Long id) {
-        Pessoa pessoa = pessoas.remove(id);
-        if (pessoa == null) {
+        if (!pessoaRepository.existsById(id)) {
             throw new ResourceNotFoundException("Pessoa com ID " + id + " não encontrada");
         }
+        pessoaRepository.deleteById(id);
     }
 
     // =====================================================
     // Conversores auxiliares (DTO ↔ Entidade)
     // =====================================================
+
+    /**
+     * Converte o DTO PessoaRequest em uma entidade Pessoa pronta para persistir.
+     */
+    private Pessoa converterRequestParaEntidade(PessoaRequest request) {
+        Pessoa pessoa = new Pessoa();
+        pessoa.setNome(request.getNome());
+        pessoa.setTipoSanguineo(request.getTipoSanguineo());
+
+        if (request.getContato() != null) {
+            pessoa.setContato(converterContato(request.getContato()));
+        }
+
+        if (request.getEnderecos() != null) {
+            List<Endereco> enderecos = converterEnderecos(request.getEnderecos());
+            pessoa.setEnderecos(enderecos);
+        } else {
+            pessoa.setEnderecos(new ArrayList<>());
+        }
+
+        return pessoa;
+    }
+
     private Contato converterContato(ContatoDTO dto) {
         if (dto == null) return null;
-        Contato contato = new Contato(dto.getTipo(), dto.getValor());
+        Contato contato = new Contato();
+        contato.setTipo(dto.getTipo());
+        contato.setValor(dto.getValor());
         return contato;
     }
 
@@ -142,5 +167,4 @@ public class PessoaService {
 
         return response;
     }
-
 }
