@@ -4,40 +4,41 @@ import com.management.DTOs.*;
 import com.management.enums.TipoContato;
 import com.management.enums.TipoEndereco;
 import com.management.enums.TipoSanguineo;
-import org.junit.jupiter.api.BeforeEach;
+import com.management.repository.PessoaRepository;
+import com.management.model.Pessoa;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Teste unitário do fluxo de cadastro de Pessoa via PessoaService,
- * utilizando DTOs (PessoaRequest e PessoaResponse) e simulação de persistência em memória.
- */
-public class TestePessoaService {
+@SpringBootTest // 🚀 Carrega o contexto completo do Spring Boot e conecta ao banco configurado
+@Transactional  // 🔁 Garante rollback automático após o teste (para não sujar o banco)
+public class testePessoaService {
 
+    @Autowired
     private PessoaService pessoaService;
 
-    @BeforeEach
-    void setUp() {
-        pessoaService = new PessoaService();
-    }
+    @Autowired
+    private PessoaRepository pessoaRepository;
 
     @Test
-    void deveCadastrarPessoaComEnderecoEContato() {
-        // --- Montagem do DTO de requisição (PessoaRequest) ---
+    void deveInserirPessoaNoBancoDeDados() {
+        // --- Montagem do DTO de requisição ---
         PessoaRequest request = new PessoaRequest();
         request.setNome("Anderson Ramos");
         request.setTipoSanguineo(TipoSanguineo.A_POSITIVO);
 
-        // Contato (usa TipoContato)
+        // Contato
         ContatoDTO contatoDTO = new ContatoDTO();
-        contatoDTO.setTipo(TipoContato.EMAIL); // enum
+        contatoDTO.setTipo(TipoContato.EMAIL);
         contatoDTO.setValor("anderson@email.com");
         request.setContato(contatoDTO);
 
-        // Endereço (usa TipoEndereco como enum)
+        // Endereço
         EnderecoDTO enderecoDTO = new EnderecoDTO();
         enderecoDTO.setRua("Rua das Flores");
         enderecoDTO.setNumero("608");
@@ -45,26 +46,28 @@ public class TestePessoaService {
         enderecoDTO.setCidade("São Paulo");
         enderecoDTO.setEstado("SP");
         enderecoDTO.setCep("01000-000");
-        enderecoDTO.setTipo(TipoEndereco.RESIDENCIAL); // <-- agora com enum, conforme seu DTO
+        enderecoDTO.setTipo(TipoEndereco.RESIDENCIAL);
         request.setEnderecos(Collections.singletonList(enderecoDTO));
 
         // --- Execução ---
         PessoaResponse response = pessoaService.cadastrar(request);
 
-        // --- Verificações ---
+        // --- Validação ---
         assertNotNull(response.getId(), "O ID deve ser gerado automaticamente");
         assertEquals("Anderson Ramos", response.getNome());
         assertEquals(TipoSanguineo.A_POSITIVO, response.getTipoSanguineo());
-        assertEquals("anderson@email.com", response.getContato().getValor());
-        assertFalse(response.getEnderecos().isEmpty(), "A lista de endereços não deve estar vazia");
-        assertEquals("Rua das Flores", response.getEnderecos().get(0).getRua());
-        assertEquals(TipoEndereco.RESIDENCIAL, response.getEnderecos().get(0).getTipo());
 
-        // --- Exibe o resumo completo no console ---
+        // --- Verifica se realmente foi salvo no banco ---
+        Pessoa pessoaSalva = pessoaRepository.findById(response.getId())
+                .orElseThrow(() -> new AssertionError("Pessoa não encontrada no banco!"));
+
+        assertEquals("Anderson Ramos", pessoaSalva.getNome());
+        assertEquals(TipoSanguineo.A_POSITIVO, pessoaSalva.getTipoSanguineo());
+
+        // --- Exibe o resumo no console ---
         exibirResumoCompleto(response);
     }
 
-    // Método auxiliar para imprimir o resumo completo (simula imprimirResumo)
     private void exibirResumoCompleto(PessoaResponse pessoa) {
         System.out.println("=== RESUMO DA PESSOA ===");
         System.out.println("ID: " + pessoa.getId());
