@@ -9,6 +9,7 @@ import com.management.model.Pessoa;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
@@ -16,7 +17,7 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest // 🚀 Carrega o contexto completo do Spring Boot e conecta ao banco configurado
-@Transactional  // 🔁 Garante rollback automático após o teste (para não sujar o banco)
+@TestPropertySource("classpath:application.properties")
 public class testePessoaService {
 
     @Autowired
