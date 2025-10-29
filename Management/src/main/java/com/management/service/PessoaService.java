@@ -80,24 +80,44 @@ public class PessoaService {
     // =====================================================
     // Conversores auxiliares (DTO ↔ Entidade)
     // =====================================================
-
-    /**
-     * Converte o DTO PessoaRequest em uma entidade Pessoa pronta para persistir.
-     */
     private Pessoa converterRequestParaEntidade(PessoaRequest request) {
+
+        // Pessoa
         Pessoa pessoa = new Pessoa();
         pessoa.setNome(request.getNome());
+
+        // Tipo Sanguineo
         pessoa.setTipoSanguineo(request.getTipoSanguineo());
 
+        // Contato
         if (request.getContato() != null) {
             pessoa.setContato(converterContato(request.getContato()));
         }
 
+        // Endereços
         if (request.getEnderecos() != null) {
             List<Endereco> enderecos = converterEnderecos(request.getEnderecos());
+            // Vincula cada endereço à pessoa
+            enderecos.forEach(e -> e.setPessoa(pessoa));
             pessoa.setEnderecos(enderecos);
         } else {
             pessoa.setEnderecos(new ArrayList<>());
+        }
+
+        // Documentos
+        if (request.getDocumentos() != null) {
+            List<Documentos> documentos = converterDocumentos(request.getDocumentos(), pessoa);
+            pessoa.setDocumentos(documentos);
+        } else {
+            pessoa.setDocumentos(new ArrayList<>());
+        }
+
+        // Filiações
+        if (request.getFiliacoes() != null) {
+            List<Filiacao> filiacoes = converterFiliacoes(request.getFiliacoes(), pessoa);
+            pessoa.setFiliacoes(filiacoes);
+        } else {
+            pessoa.setFiliacoes(new ArrayList<>());
         }
 
         return pessoa;
@@ -138,6 +158,28 @@ public class PessoaService {
         dto.setCep(endereco.getCep());
         dto.setTipo(endereco.getTipo());
         return dto;
+    }
+
+    private List<Filiacao> converterFiliacoes(List<FiliacaoDTO> dtos, Pessoa pessoa) {
+        if (dtos == null) return new ArrayList<>();
+        return dtos.stream().map(dto -> {
+            Filiacao f = new Filiacao();
+            f.setNomePai(dto.getNomePai());
+            f.setNomeMae(dto.getNomeMae());
+            f.setPessoa(pessoa); // vínculo FUNDAMENTAL
+            return f;
+        }).collect(Collectors.toList());
+    }
+
+    private List<Documentos> converterDocumentos(List<DocumentosDTO> dtos, Pessoa pessoa) {
+        if (dtos == null) return new ArrayList<>();
+        return dtos.stream().map(dto -> {
+            Documentos doc = new Documentos();
+            doc.setNumeroDocumento(dto.getNumeroDocumento());
+            doc.setTipoDocumento(dto.getTipoDocumento());
+            doc.setPessoa(pessoa); // vínculo FUNDAMENTAL
+            return doc;
+        }).collect(Collectors.toList());
     }
 
     private PessoaResponse converterParaResponse(Pessoa pessoa) {

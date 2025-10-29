@@ -3,10 +3,10 @@ package com.management.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.management.enums.TipoSanguineo;
-import java.util.ArrayList;
-import java.util.List;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
@@ -19,53 +19,58 @@ public class Pessoa extends Dominio {
 
     private String nome;
 
-    @OneToMany(
-            mappedBy = "pessoa",  // Assumindo que Endereco tem um campo "Pessoas"
-            cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER,  // Ou LAZY para performance
-            orphanRemoval = true
-    )
-    private List<Endereco> enderecos = new ArrayList<>();  // Renomeado para "Enderecos" (plural)
-
     @Enumerated(EnumType.STRING)
     private TipoSanguineo tipoSanguineo;
 
-    @Embedded  // Adicionado: Embute Contato na tabela pessoa
+    @Embedded
     private Contato contato;
+
+    @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Endereco> enderecos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Documentos> documentos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Filiacao> filiacoes = new ArrayList<>();
 
     public Pessoa() {
         this.enderecos = new ArrayList<>();
+        this.documentos = new ArrayList<>();
+        this.filiacoes = new ArrayList<>();
     }
 
-    // Getters e setters (atualizados)
+    // ==============================
+    // GETTERS E SETTERS
+    // ==============================
     @Override
-    public Long getId() {
-        return id;
-    }
-
+    public Long getId() { return id; }
     @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Override
-    public String getNome() {
-        return nome;
-    }
+    public void setId(Long id) { this.id = id; }
 
     @Override
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+    public String getNome() { return nome; }
+    @Override
+    public void setNome(String nome) { this.nome = nome; }
 
-    public List<Endereco> getEnderecos() {
-        return enderecos;
-    }
+    public TipoSanguineo getTipoSanguineo() { return tipoSanguineo; }
+    public void setTipoSanguineo(TipoSanguineo tipoSanguineo) { this.tipoSanguineo = tipoSanguineo; }
 
-    public void setEnderecos(List<Endereco> enderecos) {
-        this.enderecos = enderecos;
-    }
+    public Contato getContato() { return contato; }
+    public void setContato(Contato contato) { this.contato = contato; }
 
+    public List<Endereco> getEnderecos() { return enderecos; }
+    public void setEnderecos(List<Endereco> enderecos) { this.enderecos = enderecos; }
+
+    public List<Documentos> getDocumentos() { return documentos; }
+    public void setDocumentos(List<Documentos> documentos) { this.documentos = documentos; }
+
+    public List<Filiacao> getFiliacoes() { return filiacoes; }
+    public void setFiliacoes(List<Filiacao> filiacoes) { this.filiacoes = filiacoes; }
+
+    // ==============================
+    // MÉTODOS AUXILIARES PARA ADIÇÃO
+    // ==============================
     public void addEndereco(Endereco e) {
         if (e != null) {
             e.setPessoa(this);
@@ -73,23 +78,23 @@ public class Pessoa extends Dominio {
         }
     }
 
-    public TipoSanguineo getTipoSanguineo() {
-        return tipoSanguineo;
+    public void addDocumento(Documentos d) {
+        if (d != null) {
+            d.setPessoa(this);
+            this.documentos.add(d);
+        }
     }
 
-    public void setTipoSanguineo(TipoSanguineo tipoSanguineo) {
-        this.tipoSanguineo = tipoSanguineo;
+    public void addFiliacao(Filiacao f) {
+        if (f != null) {
+            f.setPessoa(this);
+            this.filiacoes.add(f);
+        }
     }
 
-    public Contato getContato() {
-        return contato;
-    }
-
-    public void setContato(Contato contato) {
-        this.contato = contato;
-    }
-
-    // Método imprimirResumo (atualizado para usar "enderecos")
+    // ==============================
+    // MÉTODO DE RESUMO
+    // ==============================
     public String imprimirResumo() {
         return String.format(
                 "================== Informações Pessoais ==================\n" +
@@ -98,12 +103,16 @@ public class Pessoa extends Dominio {
                         "Tipo Sanguíneo: %s\n" +
                         "Contato:        %s\n" +
                         "Endereço:       %s\n" +
+                        "Documentos:     %s\n" +
+                        "Filiações:      %s\n" +
                         "==========================================================",
                 id,
                 nome,
-                tipoSanguineo != null ? tipoSanguineo.name() : "Não informado",  // Usando name() para enum
+                tipoSanguineo != null ? tipoSanguineo.name() : "Não informado",
                 contato != null ? contato.getValor() : "Não informado",
-                enderecos.isEmpty() ? "Nenhum endereço" : enderecos.get(0).toString()
+                enderecos.isEmpty() ? "Nenhum endereço" : enderecos.get(0).toString(),
+                documentos.isEmpty() ? "Nenhum documento" : documentos.toString(),
+                filiacoes.isEmpty() ? "Nenhuma filiação" : filiacoes.toString()
         );
     }
 }

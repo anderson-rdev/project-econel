@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,13 +31,20 @@ public class testePessoaService {
     void deveInserirPessoaNoBancoDeDados() {
         // --- Montagem do DTO de requisição ---
         PessoaRequest request = new PessoaRequest();
-        request.setNome("Reginaldo Oliveira");
-        request.setTipoSanguineo(TipoSanguineo.A_POSITIVO);
+        request.setNome("Anderson Ramos");
+
+        TipoSanguineo tipo = Arrays.stream(TipoSanguineo.values())
+                .filter(t -> t.getNome().equals("A+"))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Tipo inválido"));
+
+        request.setTipoSanguineo(tipo);
+
 
         // Contato
         ContatoDTO contatoDTO = new ContatoDTO();
         contatoDTO.setTipo(TipoContato.EMAIL);
-        contatoDTO.setValor("reginaldo@email.com");
+        contatoDTO.setValor("anderson@email.com");
         request.setContato(contatoDTO);
 
         // Endereço
