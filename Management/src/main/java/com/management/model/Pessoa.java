@@ -10,7 +10,7 @@ import jakarta.persistence.*;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
-@Table(name = "pessoa")
+@Table(name = "Pessoas")
 public class Pessoa extends Dominio {
 
     @Id
@@ -20,12 +20,12 @@ public class Pessoa extends Dominio {
     private String nome;
 
     @OneToMany(
-            mappedBy = "pessoa",  // Assumindo que Endereco tem um campo "pessoa"
+            mappedBy = "pessoa",  // Assumindo que Endereco tem um campo "Pessoas"
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER,  // Ou LAZY para performance
             orphanRemoval = true
     )
-    private List<Endereco> enderecos = new ArrayList<>();  // Renomeado para "enderecos" (plural)
+    private List<Endereco> enderecos = new ArrayList<>();  // Renomeado para "Enderecos" (plural)
 
     @Enumerated(EnumType.STRING)
     private TipoSanguineo tipoSanguineo;

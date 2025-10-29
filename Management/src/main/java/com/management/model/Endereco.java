@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "endereco")
+@Table(name = "Enderecos")
 @Schema(description = "Representa um endereço vinculado a uma pessoa")
 public class Endereco {
 

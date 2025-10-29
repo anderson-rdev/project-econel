@@ -30,13 +30,13 @@ public class testePessoaService {
     void deveInserirPessoaNoBancoDeDados() {
         // --- Montagem do DTO de requisição ---
         PessoaRequest request = new PessoaRequest();
-        request.setNome("Anderson Ramos");
+        request.setNome("Reginaldo Oliveira");
         request.setTipoSanguineo(TipoSanguineo.A_POSITIVO);
 
         // Contato
         ContatoDTO contatoDTO = new ContatoDTO();
         contatoDTO.setTipo(TipoContato.EMAIL);
-        contatoDTO.setValor("anderson@email.com");
+        contatoDTO.setValor("reginaldo@email.com");
         request.setContato(contatoDTO);
 
         // Endereço
@@ -50,22 +50,37 @@ public class testePessoaService {
         enderecoDTO.setTipo(TipoEndereco.RESIDENCIAL);
         request.setEnderecos(Collections.singletonList(enderecoDTO));
 
+        // Documentos
+        DocumentosDTO documentosDTO = new DocumentosDTO();
+        documentosDTO.setNumeroDocumento("12345678900");
+        documentosDTO.setTipoDocumento("CPF");
+        request.setDocumentos(Collections.singletonList(documentosDTO));
+
+        // Filiação
+        FiliacaoDTO filiacaoDTO = new FiliacaoDTO();
+        filiacaoDTO.setNomePai("José Oliveira");
+        filiacaoDTO.setNomeMae("Maria Oliveira");
+        request.setFiliacoes(Collections.singletonList(filiacaoDTO));
+
         // --- Execução ---
         PessoaResponse response = pessoaService.cadastrar(request);
 
         // --- Validação ---
         assertNotNull(response.getId(), "O ID deve ser gerado automaticamente");
-        assertEquals("Anderson Ramos", response.getNome());
+        assertEquals("Reginaldo Oliveira", response.getNome());
         assertEquals(TipoSanguineo.A_POSITIVO, response.getTipoSanguineo());
+
+        // Documentos e Filiação
+        assertFalse(response.getDocumentos().isEmpty(), "Documentos devem ser preenchidos");
+        assertFalse(response.getFiliacoes().isEmpty(), "Filiacao deve ser preenchida");
 
         // --- Verifica se realmente foi salvo no banco ---
         Pessoa pessoaSalva = pessoaRepository.findById(response.getId())
                 .orElseThrow(() -> new AssertionError("Pessoa não encontrada no banco!"));
 
-        assertEquals("Anderson Ramos", pessoaSalva.getNome());
+        assertEquals("Reginaldo Oliveira", pessoaSalva.getNome());
         assertEquals(TipoSanguineo.A_POSITIVO, pessoaSalva.getTipoSanguineo());
 
-        // --- Exibe o resumo no console ---
         exibirResumoCompleto(response);
     }
 
