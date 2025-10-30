@@ -1,11 +1,21 @@
 package com.management.model;
 
 import com.management.enums.TipoContato;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+@Embeddable
 public class Contato {
+
+    @Enumerated(EnumType.ORDINAL) // grava como INTEGER no banco
+    @Column(name = "tipo")
     private TipoContato tipo;
+
     private String valor;
 
     // --- Constantes de Limite ---
@@ -16,10 +26,8 @@ public class Contato {
     private static final String REGEX_TELEFONE = "^(\\+\\d{1,3}\\s?)?\\(?\\d{2}\\)?\\s?\\d{4,5}-?\\d{4}$";
     private static final String REGEX_EMAIL = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
 
-    // --- Construtor vazio (necessário para frameworks) ---
-    public Contato() {
-        // Construtor padrão
-    }
+    // --- Construtor vazio ---
+    public Contato() {}
 
     // --- Construtor com validação ---
     public Contato(TipoContato tipo, String valor) {
@@ -31,41 +39,26 @@ public class Contato {
     }
 
     // --- Getters e Setters ---
-    public TipoContato getTipo() {
-        return tipo;
-    }
+    public TipoContato getTipo() { return tipo; }
+    public void setTipo(TipoContato tipo) { this.tipo = tipo; }
 
-    public void setTipo(TipoContato tipo) {
-        this.tipo = tipo;
-    }
+    public String getValor() { return valor; }
+    public void setValor(String valor) { this.valor = valor; }
 
-    public String getValor() {
-        return valor;
-    }
-
-    public void setValor(String valor) {
-        this.valor = valor;
-    }
-
-    // --- Métodos de validação ---
+    // --- Validação ---
     private boolean validar(TipoContato tipo, String valor) {
-        if (valor == null || valor.trim().isEmpty()) {
-            return false;
-        }
+        if (valor == null || valor.trim().isEmpty()) return false;
 
         String valorLimpo = valor.trim();
-
         switch (tipo) {
             case TELEFONE:
             case CELULAR:
             case WHATSAPP:
                 return valorLimpo.length() <= LIMITE_TEL_CEL &&
                         Pattern.matches(REGEX_TELEFONE, valorLimpo);
-
             case EMAIL:
                 return valorLimpo.length() <= LIMITE_EMAIL &&
                         Pattern.matches(REGEX_EMAIL, valorLimpo);
-
             default:
                 return false;
         }

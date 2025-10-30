@@ -4,6 +4,7 @@ import com.management.DTOs.*;
 import com.management.exception.ResourceNotFoundException;
 import com.management.model.*;
 import com.management.repository.PessoaRepository;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,7 +87,7 @@ public class PessoaService {
         Pessoa pessoa = new Pessoa();
         pessoa.setNome(request.getNome());
 
-        // Tipo Sanguineo
+        // Tipo Sanguíneo
         pessoa.setTipoSanguineo(request.getTipoSanguineo());
 
         // Contato
@@ -97,7 +98,6 @@ public class PessoaService {
         // Endereços
         if (request.getEnderecos() != null) {
             List<Endereco> enderecos = converterEnderecos(request.getEnderecos());
-            // Vincula cada endereço à pessoa
             enderecos.forEach(e -> e.setPessoa(pessoa));
             pessoa.setEnderecos(enderecos);
         } else {
@@ -166,20 +166,30 @@ public class PessoaService {
             Filiacao f = new Filiacao();
             f.setNomePai(dto.getNomePai());
             f.setNomeMae(dto.getNomeMae());
-            f.setPessoa(pessoa); // vínculo FUNDAMENTAL
+            f.setPessoa(pessoa);
             return f;
         }).collect(Collectors.toList());
     }
 
-    private List<Documentos> converterDocumentos(List<DocumentosDTO> dtos, Pessoa pessoa) {
-        if (dtos == null) return new ArrayList<>();
-        return dtos.stream().map(dto -> {
-            Documentos doc = new Documentos();
-            doc.setNumeroDocumento(dto.getNumeroDocumento());
-            doc.setTipoDocumento(dto.getTipoDocumento());
-            doc.setPessoa(pessoa); // vínculo FUNDAMENTAL
-            return doc;
-        }).collect(Collectors.toList());
+    /**
+     * Converte e valida documentos, ignorando entradas nulas ou vazias.
+     */
+    private List<Documentos> converterDocumentos(@NotNull List<DocumentosDTO> documentosDTOs, Pessoa pessoa) {
+        if (documentosDTOs == null) return new ArrayList<>();
+
+        return documentosDTOs.stream()
+                .filter(dto ->
+                        dto.getNumeroDocumento() != null &&
+                                !dto.getNumeroDocumento().trim().isEmpty() &&
+                                dto.getTipoDocumento() != null)
+                .map(dto -> {
+                    Documentos doc = new Documentos();
+                    doc.setNumeroDocumento(dto.getNumeroDocumento());
+                    doc.setTipoDocumento(dto.getTipoDocumento());
+                    doc.setPessoa(pessoa);
+                    return doc;
+                })
+                .collect(Collectors.toList());
     }
 
     private PessoaResponse converterParaResponse(Pessoa pessoa) {
