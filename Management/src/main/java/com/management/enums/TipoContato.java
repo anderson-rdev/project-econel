@@ -3,8 +3,8 @@ package com.management.enums;
 import com.management.Intereface.Descritivel;
 
 public enum TipoContato implements Descritivel {
-    TELEFONE(0, "E-mail"),
-    EMAIL(1, "Telefone"),
+    TELEFONE(0, "Telefone"),
+    EMAIL(1, "E-mail"),
     CELULAR(2, "Celular"),
     WHATSAPP(3, "WhatsApp");
 
