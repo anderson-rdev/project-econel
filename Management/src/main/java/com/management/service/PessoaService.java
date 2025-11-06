@@ -4,6 +4,7 @@ import com.management.DTOs.*;
 import com.management.exception.ResourceNotFoundException;
 import com.management.model.*;
 import com.management.repository.PessoaRepository;
+import com.management.repository.TipoContatoRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,15 +23,22 @@ public class PessoaService {
     @Autowired
     private PessoaRepository pessoaRepository;
 
+    @Autowired
+    private TipoContatoRepository tipoContatoRepository;
+
     // =======================================
     // Cadastrar (POST)
     // =======================================
     public PessoaResponse cadastrar(PessoaRequest request) {
         Pessoa pessoa = converterRequestParaEntidade(request);
 
-        // Garante a referência bidirecional Pessoa ↔ Endereço
+        // Garante vínculos bidirecionais
         if (pessoa.getEnderecos() != null) {
             pessoa.getEnderecos().forEach(e -> e.setPessoa(pessoa));
+        }
+
+        if (pessoa.getContatos() != null) {
+            pessoa.getContatos().forEach(c -> c.setPessoa(pessoa));
         }
 
         Pessoa salva = pessoaRepository.save(pessoa);
@@ -55,11 +63,22 @@ public class PessoaService {
 
         if (request.getNome() != null) pessoa.setNome(request.getNome());
         if (request.getTipoSanguineo() != null) pessoa.setTipoSanguineo(request.getTipoSanguineo());
-        if (request.getContato() != null) pessoa.setContato(converterContato(request.getContato()));
 
+        // Contatos
+        if (request.getContato() != null) {
+            List<Contato> novosContatos = converterContatos(Collections.singletonList(request.getContato()));
+            novosContatos.forEach(c -> c.setPessoa(pessoa));
+
+            // Substitui contatos existentes
+            pessoa.getContatos().clear();
+            pessoa.getContatos().addAll(novosContatos);
+        }
+
+        // Endereços
         if (request.getEnderecos() != null) {
             List<Endereco> novosEnderecos = converterEnderecos(request.getEnderecos());
-            novosEnderecos.forEach(e -> e.setPessoa(pessoa)); // vínculo
+            novosEnderecos.forEach(e -> e.setPessoa(pessoa));
+            // corrigido: não usar clone(); limpar e adicionar
             pessoa.getEnderecos().clear();
             pessoa.getEnderecos().addAll(novosEnderecos);
         }
@@ -81,24 +100,23 @@ public class PessoaService {
     // =====================================================
     // Conversores auxiliares (DTO ↔ Entidade)
     // =====================================================
-    private Pessoa converterRequestParaEntidade(PessoaRequest request) {
 
-        // Pessoa
+    private Pessoa converterRequestParaEntidade(PessoaRequest request) {
         Pessoa pessoa = new Pessoa();
         pessoa.setNome(request.getNome());
-
-        // Tipo Sanguíneo
         pessoa.setTipoSanguineo(request.getTipoSanguineo());
 
-        // Contato
+       // Contato (único)
         if (request.getContato() != null) {
-            pessoa.setContato(converterContato(request.getContato()));
+            List<Contato> contatos = converterContatos(Collections.singletonList(request.getContato()));
+            pessoa.setContatos(contatos);
+        } else {
+            pessoa.setContatos(new ArrayList<>());
         }
 
         // Endereços
         if (request.getEnderecos() != null) {
             List<Endereco> enderecos = converterEnderecos(request.getEnderecos());
-            enderecos.forEach(e -> e.setPessoa(pessoa));
             pessoa.setEnderecos(enderecos);
         } else {
             pessoa.setEnderecos(new ArrayList<>());
@@ -123,12 +141,24 @@ public class PessoaService {
         return pessoa;
     }
 
-    private Contato converterContato(ContatoDTO dto) {
-        if (dto == null) return null;
-        Contato contato = new Contato();
-        contato.setTipo(dto.getTipo());
-        contato.setValor(dto.getValor());
-        return contato;
+    private List<Contato> converterContatos(List<ContatoRequest> dtos) {
+        if (dtos == null) return new ArrayList<>();
+
+        return dtos.stream().map(dto -> {
+            if (dto.getTipo() == null || dto.getTipo().trim().isEmpty()) {
+                throw new ResourceNotFoundException("Tipo de contato não informado");
+            }
+
+//            TipoContato tipoContato = tipoContatoRepository
+//                    .findByDescricaoIgnoreCase(dto.getTipo().trim())
+//                    .orElseThrow(() ->
+//                            new ResourceNotFoundException("TipoContato não encontrado: " + dto.getTipo()));
+
+            Contato contato = new Contato();
+            contato.setContato(dto.getValor());
+//            contato.setTipoContato(tipoContato);
+            return contato;
+        }).collect(Collectors.toList());
     }
 
     private List<Endereco> converterEnderecos(List<EnderecoDTO> dtos) {
@@ -146,20 +176,6 @@ public class PessoaService {
         }).collect(Collectors.toList());
     }
 
-    private EnderecoDTO converterEnderecoParaDTO(Endereco endereco) {
-        if (endereco == null) return null;
-
-        EnderecoDTO dto = new EnderecoDTO();
-        dto.setRua(endereco.getRua());
-        dto.setNumero(endereco.getNumero());
-        dto.setBairro(endereco.getBairro());
-        dto.setCidade(endereco.getCidade());
-        dto.setEstado(endereco.getEstado());
-        dto.setCep(endereco.getCep());
-        dto.setTipo(endereco.getTipo());
-        return dto;
-    }
-
     private List<Filiacao> converterFiliacoes(List<FiliacaoDTO> dtos, Pessoa pessoa) {
         if (dtos == null) return new ArrayList<>();
         return dtos.stream().map(dto -> {
@@ -171,9 +187,6 @@ public class PessoaService {
         }).collect(Collectors.toList());
     }
 
-    /**
-     * Converte e valida documentos, ignorando entradas nulas ou vazias.
-     */
     private List<Documentos> converterDocumentos(@NotNull List<DocumentosDTO> documentosDTOs, Pessoa pessoa) {
         if (documentosDTOs == null) return new ArrayList<>();
 
@@ -196,15 +209,18 @@ public class PessoaService {
         if (pessoa == null) return null;
 
         PessoaResponse response = new PessoaResponse();
-        response.setId(pessoa.getId());
+        response.setId(pessoa.getIdPessoa());
         response.setNome(pessoa.getNome());
         response.setTipoSanguineo(pessoa.getTipoSanguineo());
 
-        // Contato
-        if (pessoa.getContato() != null) {
+        // Caso mantenha compatibilidade com DTOs antigos, retornamos o primeiro contato
+        if (pessoa.getContatos() != null && !pessoa.getContatos().isEmpty()) {
+            Contato contato = pessoa.getContatos().get(0);
             ContatoDTO contatoDTO = new ContatoDTO();
-            contatoDTO.setTipo(pessoa.getContato().getTipo());
-            contatoDTO.setValor(pessoa.getContato().getValor());
+            if (contato.getTipoContato() != null) {
+                contatoDTO.setTipo(contato.getTipoContato().getDescricao());
+            }
+            contatoDTO.setValor(contato.getContato());
             response.setContato(contatoDTO);
         }
 
@@ -212,7 +228,15 @@ public class PessoaService {
         List<EnderecoDTO> enderecosDTO = new ArrayList<>();
         if (pessoa.getEnderecos() != null) {
             for (Endereco e : pessoa.getEnderecos()) {
-                enderecosDTO.add(converterEnderecoParaDTO(e));
+                EnderecoDTO dto = new EnderecoDTO();
+                dto.setRua(e.getRua());
+                dto.setNumero(e.getNumero());
+                dto.setBairro(e.getBairro());
+                dto.setCidade(e.getCidade());
+                dto.setEstado(e.getEstado());
+                dto.setCep(e.getCep());
+                dto.setTipo(e.getTipo());
+                enderecosDTO.add(dto);
             }
         }
         response.setEnderecos(enderecosDTO);

@@ -151,7 +151,7 @@ public class Endereco {
     // MÉTODOS AUXILIARES
     // ==============================
     public Long getPessoaId() {
-        return pessoa != null ? pessoa.getId() : null;
+        return pessoa != null ? pessoa.getIdPessoa() : null;
     }
 
     @Override

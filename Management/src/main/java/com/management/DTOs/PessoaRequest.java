@@ -27,7 +27,7 @@ public class PessoaRequest {
     @Schema(description = "Dados de contato da pessoa", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "Os dados de contato são obrigatórios")
     @Valid
-    private ContatoDTO contato;
+    private ContatoRequest contato;
 
     @Schema(description = "Lista de endereços associados à pessoa")
     @Valid
@@ -58,8 +58,8 @@ public class PessoaRequest {
     public TipoSanguineo getTipoSanguineo() { return tipoSanguineo; }
     public void setTipoSanguineo(TipoSanguineo tipoSanguineo) { this.tipoSanguineo = tipoSanguineo; }
 
-    public ContatoDTO getContato() { return contato; }
-    public void setContato(ContatoDTO contato) { this.contato = contato; }
+    public ContatoRequest getContato() { return contato; }
+    public void setContato(ContatoRequest contato) { this.contato = contato; }
 
     @JsonProperty("enderecos")
     public List<EnderecoDTO> getEnderecos() { return enderecos; }

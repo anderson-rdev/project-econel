@@ -1,117 +1,159 @@
 package com.management.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.management.enums.TipoSanguineo;
-
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
+import java.util.*;
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+/**
+ * Entidade Pessoa corrigida — inclui tipo sanguíneo, contatos e endereços.
+ */
 @Entity
 @Table(name = "Pessoas")
-public class Pessoa extends Dominio {
+public class Pessoa implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idPessoa;
 
+    @Column(nullable = false, length = 120)
     private String nome;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_sanguineo", length = 20)
     private TipoSanguineo tipoSanguineo;
 
-    @Embedded
-    private Contato contato;
+    @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Contato> contatos = new ArrayList<>();
 
-    @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Endereco> enderecos = new ArrayList<>();
 
-    @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Documentos> documentos = new ArrayList<>();
 
-    @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Filiacao> filiacoes = new ArrayList<>();
 
-    public Pessoa() {
-        this.enderecos = new ArrayList<>();
-        this.documentos = new ArrayList<>();
-        this.filiacoes = new ArrayList<>();
+    public Pessoa() {}
+
+    public Pessoa(String nome) {
+        this.nome = nome;
     }
 
-    // ==============================
-    // GETTERS E SETTERS
-    // ==============================
-    @Override
-    public Long getId() { return id; }
-    @Override
-    public void setId(Long id) { this.id = id; }
-    @Override
-    public String getNome() { return nome; }
-    @Override
-    public void setNome(String nome) { this.nome = nome; }
+    /* -------------------- Getters / Setters -------------------- */
 
-    public TipoSanguineo getTipoSanguineo() { return tipoSanguineo; }
-    public void setTipoSanguineo(TipoSanguineo tipoSanguineo) { this.tipoSanguineo = tipoSanguineo; }
-
-    public Contato getContato() { return contato; }
-    public void setContato(Contato contato) { this.contato = contato; }
-
-    public List<Endereco> getEnderecos() { return enderecos; }
-    public void setEnderecos(List<Endereco> enderecos) { this.enderecos = enderecos; }
-
-    public List<Documentos> getDocumentos() { return documentos; }
-    public void setDocumentos(List<Documentos> documentos) { this.documentos = documentos; }
-
-    public List<Filiacao> getFiliacoes() { return filiacoes; }
-    public void setFiliacoes(List<Filiacao> filiacoes) { this.filiacoes = filiacoes; }
-
-    // ==============================
-    // MÉTODOS AUXILIARES PARA ADIÇÃO
-    // ==============================
-    public void addEndereco(Endereco e) {
-        if (e != null) {
-            e.setPessoa(this);
-            this.enderecos.add(e);
-        }
+    public Long getIdPessoa() {
+        return idPessoa;
     }
 
-    public void addDocumento(Documentos d) {
-        if (d != null) {
-            d.setPessoa(this);
-            this.documentos.add(d);
-        }
+    public void setIdPessoa(Long idPessoa) {
+        this.idPessoa = idPessoa;
     }
 
-    public void addFiliacao(Filiacao f) {
-        if (f != null) {
-            f.setPessoa(this);
-            this.filiacoes.add(f);
-        }
+    public String getNome() {
+        return nome;
     }
 
-    // ==============================
-    // MÉTODO DE RESUMO
-    // ==============================
-    public String imprimirResumo() {
-        return String.format(
-                "================== Informações Pessoais ==================\n" +
-                        "ID:             %d\n" +
-                        "Nome:           %s\n" +
-                        "Tipo Sanguíneo: %s\n" +
-                        "Contato:        %s\n" +
-                        "Endereço:       %s\n" +
-                        "Documentos:     %s\n" +
-                        "Filiações:      %s\n" +
-                        "==========================================================",
-                id,
-                nome,
-                tipoSanguineo != null ? tipoSanguineo.name() : "Não informado",
-                contato != null ? contato.getValor() : "Não informado",
-                enderecos.isEmpty() ? "Nenhum endereço" : enderecos.get(0).toString(),
-                documentos.isEmpty() ? "Nenhum documento" : documentos.toString(),
-                filiacoes.isEmpty() ? "Nenhuma filiação" : filiacoes.toString()
-        );
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public TipoSanguineo getTipoSanguineo() {
+        return tipoSanguineo;
+    }
+
+    public void setTipoSanguineo(TipoSanguineo tipoSanguineo) {
+        this.tipoSanguineo = tipoSanguineo;
+    }
+
+    public List<Contato> getContatos() {
+        return contatos;
+    }
+
+    public void setContatos(List<Contato> contatos) {
+        this.contatos = contatos == null ? new ArrayList<>() : contatos;
+    }
+
+    public List<Endereco> getEnderecos() {
+        return enderecos;
+    }
+
+    public void setEnderecos(List<Endereco> enderecos) {
+        this.enderecos = enderecos == null ? new ArrayList<>() : enderecos;
+    }
+
+    public List<Documentos> getDocumentos() {
+        return documentos;
+    }
+
+    public void setDocumentos(List<Documentos> documentos) {
+        this.documentos = documentos == null ? new ArrayList<>() : documentos;
+    }
+
+    public List<Filiacao> getFiliacoes() {
+        return filiacoes;
+    }
+
+    public void setFiliacoes(List<Filiacao> filiacoes) {
+        this.filiacoes = filiacoes == null ? new ArrayList<>() : filiacoes;
+    }
+
+    /* -------------------- Auxiliares bidirecionais -------------------- */
+
+    public void adicionarContato(Contato contato) {
+        if (contato == null) return;
+        contato.setPessoa(this);
+        this.contatos.add(contato);
+    }
+
+    public void removerContato(Contato contato) {
+        if (contato == null) return;
+        contato.setPessoa(null);
+        this.contatos.remove(contato);
+    }
+
+    public void adicionarEndereco(Endereco endereco) {
+        if (endereco == null) return;
+        endereco.setPessoa(this);
+        this.enderecos.add(endereco);
+    }
+
+    public void removerEndereco(Endereco endereco) {
+        if (endereco == null) return;
+        endereco.setPessoa(null);
+        this.enderecos.remove(endereco);
+    }
+
+    public void adicionarDocumento(Documentos doc) {
+        if (doc == null) return;
+        doc.setPessoa(this);
+        this.documentos.add(doc);
+    }
+
+    public void adicionarFiliacao(Filiacao f) {
+        if (f == null) return;
+        f.setPessoa(this);
+        this.filiacoes.add(f);
+    }
+
+    /* -------------------- equals / hashCode / toString -------------------- */
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Pessoa)) return false;
+        Pessoa pessoa = (Pessoa) o;
+        return Objects.equals(idPessoa, pessoa.idPessoa);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idPessoa);
+    }
+
+    @Override
+    public String toString() {
+        return nome;
     }
 }

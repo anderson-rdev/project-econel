@@ -1,16 +1,42 @@
 package com.management.DTOs;
 
-import com.management.enums.TipoContato;
-
-// DTO para os dados de contato que vêm na request
+/**
+ * DTO usado nas requisições (POST/PUT) para cadastrar ou atualizar contatos.
+ *
+ * O campo 'tipo' deve conter o nome/descrição do tipo de contato
+ * (por exemplo: "EMAIL", "CELULAR", "TELEFONE").
+ */
 public class ContatoRequest {
-    private TipoContato tipo;
-    private String valor;
+
+    private String tipo;  // descrição do tipo de contato
+    private String valor; // e-mail, telefone, etc.
+
+    public ContatoRequest() {}
+
+    public ContatoRequest(String tipo, String valor) {
+        this.tipo = tipo;
+        this.valor = valor;
+    }
 
     // Getters e Setters
-    public TipoContato getTipo() { return tipo; }
-    public void setTipo(TipoContato tipo) { this.tipo = tipo; }
+    public String getTipo() {
+        return tipo;
+    }
 
-    public String getValor() { return valor; }
-    public void setValor(String valor) { this.valor = valor; }
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getValor() {
+        return valor;
+    }
+
+    public void setValor(String valor) {
+        this.valor = valor;
+    }
+
+    @Override
+    public String toString() {
+        return tipo + ": " + valor;
+    }
 }

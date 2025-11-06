@@ -1,86 +1,82 @@
 package com.management.model;
 
-import com.management.enums.TipoContato;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
-@Embeddable
-public class Contato {
+@Entity
+@Table(name = "Contatos")
+public class Contato implements Serializable {
 
-    @Enumerated(EnumType.ORDINAL) // grava como INTEGER no banco
-    @Column(name = "tipo")
-    private TipoContato tipo;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idContato;
 
-    private String valor;
+    @Column(nullable = false, length = 100)
+    private String contato; // Ex: e-mail, telefone, etc.
 
-    // --- Constantes de Limite ---
-    private static final int LIMITE_TEL_CEL = 15;
-    private static final int LIMITE_EMAIL = 50;
+    @ManyToOne
+    @JoinColumn(name = "id_tipo_contato", nullable = false)
+    private TipoContato tipoContato;
 
-    // --- Padrões de Validação (Regex) ---
-    private static final String REGEX_TELEFONE = "^(\\+\\d{1,3}\\s?)?\\(?\\d{2}\\)?\\s?\\d{4,5}-?\\d{4}$";
-    private static final String REGEX_EMAIL = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pessoa_id")
+    private Pessoa pessoa;
 
-    // --- Construtor vazio ---
     public Contato() {}
 
-    // --- Construtor com validação ---
-    public Contato(TipoContato tipo, String valor) {
-        if (!validar(tipo, valor)) {
-            throw new IllegalArgumentException("Contato inválido para o tipo: " + tipo.name() + " ou formato incorreto.");
-        }
-        this.tipo = tipo;
-        this.valor = valor.trim();
+    public Contato(String contato, TipoContato tipoContato) {
+        this.contato = contato;
+        this.tipoContato = tipoContato;
     }
 
-    // --- Getters e Setters ---
-    public TipoContato getTipo() { return tipo; }
-    public void setTipo(TipoContato tipo) { this.tipo = tipo; }
-
-    public String getValor() { return valor; }
-    public void setValor(String valor) { this.valor = valor; }
-
-    // --- Validação ---
-    private boolean validar(TipoContato tipo, String valor) {
-        if (valor == null || valor.trim().isEmpty()) return false;
-
-        String valorLimpo = valor.trim();
-        switch (tipo) {
-            case TELEFONE:
-            case CELULAR:
-            case WHATSAPP:
-                return valorLimpo.length() <= LIMITE_TEL_CEL &&
-                        Pattern.matches(REGEX_TELEFONE, valorLimpo);
-            case EMAIL:
-                return valorLimpo.length() <= LIMITE_EMAIL &&
-                        Pattern.matches(REGEX_EMAIL, valorLimpo);
-            default:
-                return false;
-        }
+    public Long getIdContato() {
+        return idContato;
     }
 
-    // --- Equals e HashCode ---
+    public void setIdContato(Long idContato) {
+        this.idContato = idContato;
+    }
+
+    public String getContato() {
+        return contato;
+    }
+
+    public void setContato(String contato) {
+        this.contato = contato;
+    }
+
+    public TipoContato getTipoContato() {
+        return tipoContato;
+    }
+
+    public void setTipoContato(TipoContato tipoContato) {
+        this.tipoContato = tipoContato;
+    }
+
+    public Pessoa getPessoa() {
+        return pessoa;
+    }
+
+    public void setPessoa(Pessoa pessoa) {
+        this.pessoa = pessoa;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Contato contato = (Contato) o;
-        return tipo == contato.tipo && Objects.equals(valor, contato.valor);
+        if (!(o instanceof Contato)) return false;
+        Contato contato1 = (Contato) o;
+        return Objects.equals(idContato, contato1.idContato);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(tipo, valor);
+        return Objects.hash(idContato);
     }
 
-    // --- ToString ---
     @Override
     public String toString() {
-        return tipo.getNome() + ": " + valor;
+        return contato + " (" + tipoContato + ")";
     }
 }

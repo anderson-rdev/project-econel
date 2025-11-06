@@ -186,5 +186,4 @@ public class PessoaController {
         return new MensagemResponse(ex.getMessage());
     }
 
-
 }

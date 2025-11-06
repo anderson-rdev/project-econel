@@ -1,21 +1,22 @@
 package com.management.service;
 
 import com.management.DTOs.*;
-import com.management.enums.TipoContato;
 import com.management.enums.TipoEndereco;
 import com.management.enums.TipoSanguineo;
+import com.management.model.TipoContato;
 import com.management.repository.PessoaRepository;
+import com.management.repository.TipoContatoRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.Collections;
 
 @SpringBootTest
 @TestPropertySource("classpath:application.properties")
-@Commit //
+@Commit
 public class testePessoaService {
 
     @Autowired
@@ -24,25 +25,31 @@ public class testePessoaService {
     @Autowired
     private PessoaRepository pessoaRepository;
 
+    @Autowired
+    private TipoContatoRepository tipoContatoRepository;
+
     @Test
     void deveInserirPessoaNoBancoDeDados() {
+        // --- Pré-condição: garantir que o tipo de contato exista ---
+        TipoContato tipoEmail = tipoContatoRepository.findByDescricaoIgnoreCase("E-MAIL")
+                .orElseGet(() -> tipoContatoRepository.save(new TipoContato("E-MAIL")));
+
         // --- Montagem do DTO de requisição ---
         PessoaRequest request = new PessoaRequest();
-        request.setNome("Teste Ramos");
-
+        request.setNome("Reginaldo de Oliveira");
         request.setTipoSanguineo(TipoSanguineo.A_POSITIVO);
 
-        // Contato
-        ContatoDTO contatoDTO = new ContatoDTO();
-        contatoDTO.setTipo(TipoContato.EMAIL); //findbyd na classe TipoContado que vai substituir o ENUM
-        contatoDTO.setValor("ramon@email.com");
-        request.setContato(contatoDTO);
+       // Contato (usando o DTO correto para POST)
+        ContatoRequest contatoRequest = new ContatoRequest();
+        contatoRequest.setTipo(tipoEmail.getDescricao()); // "E-MAIL"
+        contatoRequest.setValor("reginaldo@email.com");
+        request.setContato(contatoRequest);
 
         // Endereço
         EnderecoDTO enderecoDTO = new EnderecoDTO();
         enderecoDTO.setRua("Rua das Flores");
-        enderecoDTO.setNumero("704");
-        enderecoDTO.setBairro("Centro");
+        enderecoDTO.setNumero("710");
+        enderecoDTO.setBairro("Zona Norte");
         enderecoDTO.setCidade("São Paulo");
         enderecoDTO.setEstado("SP");
         enderecoDTO.setCep("01000-000");
