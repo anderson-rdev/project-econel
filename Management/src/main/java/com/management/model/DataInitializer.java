@@ -5,6 +5,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Configuration
 public class DataInitializer {
 
@@ -12,19 +15,30 @@ public class DataInitializer {
     CommandLineRunner initDatabase(TipoContatoRepository tipoContatoRepository) {
         return args -> {
 
-            if (tipoContatoRepository.count() == 0) {
-                System.out.println("🟢 Populando Tipos de Contato iniciais...");
+            // Lista base de tipos de contato que o sistema deve garantir que existam
+            List<String> tiposPadrao = Arrays.asList(
+                    "Email",
+                    "Telefone",
+                    "WhatsApp",
+                    "Telegram",
+                    "Instagram",
+                    "Facebook",
+                    "LinkedIn"
+            );
 
-                tipoContatoRepository.save(new TipoContato("Email"));
-                tipoContatoRepository.save(new TipoContato("Telefone"));
-                tipoContatoRepository.save(new TipoContato("WhatsApp"));
-                tipoContatoRepository.save(new TipoContato("Telegram"));
+            System.out.println("🔍 Verificando Tipos de Contato...");
 
-                System.out.println("✅ Tipos de Contato inseridos com sucesso!");
-            } else {
-                System.out.println("ℹ️ Tipos de Contato já existentes — inicialização ignorada.");
-            }
+            tiposPadrao.forEach(tipo -> {
+                boolean existe = tipoContatoRepository.findByDescricaoIgnoreCase(tipo).isPresent();
+                if (!existe) {
+                    tipoContatoRepository.save(new TipoContato(tipo));
+                    System.out.printf("✅ Tipo de contato '%s' cadastrado automaticamente.%n", tipo);
+                } else {
+                    System.out.printf("ℹ️ Tipo de contato '%s' já existe.%n", tipo);
+                }
+            });
+
+            System.out.println("🏁 Verificação de Tipos de Contato concluída.");
         };
     }
 }
-

@@ -40,13 +40,13 @@ class PessoaServiceTest {
 
         // Monta o objeto de requisição
         PessoaRequest request = new PessoaRequest();
-        request.setNome("Lucas Pereira da Silva");
+        request.setNome("Teste Pereira da Silva");
         request.setTipoSanguineo(TipoSanguineo.B_NEGATIVO);
 
         // Contatos
         ContatoRequest email = new ContatoRequest();
         email.setTipo(tipoEmail.getDescricao());
-        email.setValor("lucas.pereira@gmail.com");
+        email.setValor("teste.pereira@gmail.com");
 
         ContatoRequest telefone = new ContatoRequest();
         telefone.setTipo(tipoTelefone.getDescricao());
@@ -78,13 +78,13 @@ class PessoaServiceTest {
         // Documento
         DocumentosDTO documento = new DocumentosDTO();
         documento.setTipoDocumento("CPF");
-        documento.setNumeroDocumento("485.965.720-19");
+        documento.setNumeroDocumento("666.965.720-19");
         request.setDocumentos(Arrays.asList(documento));
 
         // Filiação
         FiliacaoDTO filiacao = new FiliacaoDTO();
-        filiacao.setNomePai("Rogério Pereira");
-        filiacao.setNomeMae("Carla da Silva Pereira");
+        filiacao.setNomePai("Teste Pereira");
+        filiacao.setNomeMae("Teste da Silva Pereira");
         request.setFiliacoes(Arrays.asList(filiacao));
 
         // Executa o cadastro — grava no banco
