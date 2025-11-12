@@ -9,6 +9,10 @@ import jakarta.validation.constraints.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Representa os dados necessários para cadastrar ou atualizar uma Pessoa.
+ * Inclui informações pessoais, contatos, endereços, documentos e filiação.
+ */
 @Schema(description = "Representa os dados necessários para cadastrar ou atualizar uma pessoa")
 public class PessoaRequest {
 
@@ -24,31 +28,48 @@ public class PessoaRequest {
     @NotNull(message = "O tipo sanguíneo é obrigatório")
     private TipoSanguineo tipoSanguineo;
 
-    @Schema(description = "Dados de contato da pessoa", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "Os dados de contato são obrigatórios")
+    // ============================================================
+    // 🔹 Contatos (permite múltiplos)
+    // ============================================================
+    @Schema(description = "Lista de contatos associados à pessoa (e.g., e-mail, telefone, WhatsApp)")
     @Valid
-    private ContatoRequest contato;
+    @NotEmpty(message = "A pessoa deve ter ao menos um contato")
+    @JsonProperty("contatos")
+    private List<ContatoRequest> contatos = new ArrayList<>();
 
+    // ============================================================
+    // 🔹 Endereços
+    // ============================================================
     @Schema(description = "Lista de endereços associados à pessoa")
     @Valid
     @Size(max = 5, message = "A pessoa pode ter no máximo 5 endereços cadastrados")
     @JsonProperty("enderecos")
     private List<EnderecoDTO> enderecos = new ArrayList<>();
 
-    @Schema(description = "Lista de documentos da pessoa")
+    // ============================================================
+    // 🔹 Documentos
+    // ============================================================
+    @Schema(description = "Lista de documentos da pessoa (CPF, RG, CRM, etc.)")
     @Valid
     @JsonProperty("documentos")
     private List<DocumentosDTO> documentos = new ArrayList<>();
 
-    @Schema(description = "Lista de filiações da pessoa")
+    // ============================================================
+    // 🔹 Filiações
+    // ============================================================
+    @Schema(description = "Lista de filiações da pessoa (pai e mãe)")
     @Valid
     @JsonProperty("filiacoes")
     private List<FiliacaoDTO> filiacoes = new ArrayList<>();
 
-    // Construtor vazio
+    // ============================================================
+    // 🔧 Construtores
+    // ============================================================
     public PessoaRequest() {}
 
-    // Getters e Setters
+    // ============================================================
+    // ⚙️ Getters e Setters
+    // ============================================================
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -58,8 +79,12 @@ public class PessoaRequest {
     public TipoSanguineo getTipoSanguineo() { return tipoSanguineo; }
     public void setTipoSanguineo(TipoSanguineo tipoSanguineo) { this.tipoSanguineo = tipoSanguineo; }
 
-    public ContatoRequest getContato() { return contato; }
-    public void setContato(ContatoRequest contato) { this.contato = contato; }
+    @JsonProperty("contatos")
+    public List<ContatoRequest> getContatos() { return contatos; }
+    @JsonProperty("contatos")
+    public void setContatos(List<ContatoRequest> contatos) {
+        this.contatos = contatos != null ? contatos : new ArrayList<>();
+    }
 
     @JsonProperty("enderecos")
     public List<EnderecoDTO> getEnderecos() { return enderecos; }

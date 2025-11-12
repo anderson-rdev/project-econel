@@ -3,7 +3,6 @@ package com.management.DTOs;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.management.enums.TipoSanguineo;
 import io.swagger.v3.oas.annotations.media.Schema;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +18,9 @@ public class PessoaResponse {
     @Schema(description = "Tipo sanguíneo da pessoa", example = "O_POSITIVO")
     private TipoSanguineo tipoSanguineo;
 
-    @Schema(description = "Dados de contato da pessoa")
-    private ContatoDTO contato;
+    @Schema(description = "Lista de contatos da pessoa")
+    @JsonProperty("contatos")
+    private List<ContatoDTO> contatos = new ArrayList<>();
 
     @Schema(description = "Lista de endereços associados à pessoa")
     @JsonProperty("enderecos")
@@ -39,12 +39,12 @@ public class PessoaResponse {
 
     // Construtor completo
     public PessoaResponse(Long id, String nome, TipoSanguineo tipoSanguineo,
-                          ContatoDTO contato, List<EnderecoDTO> enderecos,
+                          List<ContatoDTO> contatos, List<EnderecoDTO> enderecos,
                           List<DocumentosDTO> documentos, List<FiliacaoDTO> filiacoes) {
         this.id = id;
         this.nome = nome;
         this.tipoSanguineo = tipoSanguineo;
-        this.contato = contato;
+        this.contatos = contatos != null ? contatos : new ArrayList<>();
         this.enderecos = enderecos != null ? enderecos : new ArrayList<>();
         this.documentos = documentos != null ? documentos : new ArrayList<>();
         this.filiacoes = filiacoes != null ? filiacoes : new ArrayList<>();
@@ -60,26 +60,22 @@ public class PessoaResponse {
     public TipoSanguineo getTipoSanguineo() { return tipoSanguineo; }
     public void setTipoSanguineo(TipoSanguineo tipoSanguineo) { this.tipoSanguineo = tipoSanguineo; }
 
-    public ContatoDTO getContato() { return contato; }
-    public void setContato(ContatoDTO contato) { this.contato = contato; }
+    public List<ContatoDTO> getContatos() { return contatos; }
+    public void setContatos(List<ContatoDTO> contatos) {
+        this.contatos = contatos != null ? contatos : new ArrayList<>();
+    }
 
-    @JsonProperty("enderecos")
     public List<EnderecoDTO> getEnderecos() { return enderecos; }
-    @JsonProperty("enderecos")
     public void setEnderecos(List<EnderecoDTO> enderecos) {
         this.enderecos = enderecos != null ? enderecos : new ArrayList<>();
     }
 
-    @JsonProperty("documentos")
     public List<DocumentosDTO> getDocumentos() { return documentos; }
-    @JsonProperty("documentos")
     public void setDocumentos(List<DocumentosDTO> documentos) {
         this.documentos = documentos != null ? documentos : new ArrayList<>();
     }
 
-    @JsonProperty("filiacoes")
     public List<FiliacaoDTO> getFiliacoes() { return filiacoes; }
-    @JsonProperty("filiacoes")
     public void setFiliacoes(List<FiliacaoDTO> filiacoes) {
         this.filiacoes = filiacoes != null ? filiacoes : new ArrayList<>();
     }

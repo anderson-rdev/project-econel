@@ -1,5 +1,7 @@
 package com.management.DTOs;
 
+import java.util.List;
+
 /**
  * DTO para representar os dados de contato, tanto em requisições (entrada)
  * quanto em respostas (saída).
@@ -10,12 +12,9 @@ package com.management.DTOs;
  * No caso de respostas, ele pode ser usado para retornar essa descrição.
  */
 public class ContatoDTO {
-
-    // Exemplo: "EMAIL", "CELULAR", "TELEFONE"
-    private String tipo;
-
-    // Exemplo: "usuario@email.com" ou "(11) 99999-8888"
-    private String valor;
+    private String tipo;   // Exemplo: "Email", "Telefone"
+    private String valor;  // Exemplo: "usuario@dominio.com"
+    private List<ContatoDTO> contatos;
 
     public ContatoDTO() {}
 
@@ -24,7 +23,6 @@ public class ContatoDTO {
         this.valor = valor;
     }
 
-    // Getters e Setters
     public String getTipo() {
         return tipo;
     }
@@ -41,8 +39,11 @@ public class ContatoDTO {
         this.valor = valor;
     }
 
-    @Override
-    public String toString() {
-        return tipo + ": " + valor;
+    public List<ContatoDTO> getContatos() {
+        return contatos;
+    }
+
+    public void setContatos(List<ContatoDTO> contatos) {
+        this.contatos = contatos;
     }
 }

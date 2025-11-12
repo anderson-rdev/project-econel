@@ -65,8 +65,8 @@ public class PessoaService {
         if (request.getTipoSanguineo() != null) pessoa.setTipoSanguineo(request.getTipoSanguineo());
 
         // Contatos
-        if (request.getContato() != null) {
-            List<Contato> novosContatos = converterContatos(Collections.singletonList(request.getContato()));
+        if (request.getContatos() != null && !request.getContatos().isEmpty()) {
+            List<Contato> novosContatos = converterContatos(request.getContatos());
             novosContatos.forEach(c -> c.setPessoa(pessoa));
 
             // Substitui contatos existentes
@@ -106,14 +106,6 @@ public class PessoaService {
         pessoa.setNome(request.getNome());
         pessoa.setTipoSanguineo(request.getTipoSanguineo());
 
-       // Contato (único)
-        if (request.getContato() != null) {
-            List<Contato> contatos = converterContatos(Collections.singletonList(request.getContato()));
-            pessoa.setContatos(contatos);
-        } else {
-            pessoa.setContatos(new ArrayList<>());
-        }
-
         // Endereços
         if (request.getEnderecos() != null) {
             List<Endereco> enderecos = converterEnderecos(request.getEnderecos());
@@ -149,14 +141,15 @@ public class PessoaService {
                 throw new ResourceNotFoundException("Tipo de contato não informado");
             }
 
-//            TipoContato tipoContato = tipoContatoRepository
-//                    .findByDescricaoIgnoreCase(dto.getTipo().trim())
-//                    .orElseThrow(() ->
-//                            new ResourceNotFoundException("TipoContato não encontrado: " + dto.getTipo()));
+            // Buscar o tipo de contato existente
+            TipoContato tipoContato = tipoContatoRepository
+                    .findByDescricaoIgnoreCase(dto.getTipo().trim())
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException("TipoContato não encontrado: " + dto.getTipo()));
 
             Contato contato = new Contato();
             contato.setContato(dto.getValor());
-//            contato.setTipoContato(tipoContato);
+            contato.setTipoContato(tipoContato);
             return contato;
         }).collect(Collectors.toList());
     }
@@ -221,7 +214,7 @@ public class PessoaService {
                 contatoDTO.setTipo(contato.getTipoContato().getDescricao());
             }
             contatoDTO.setValor(contato.getContato());
-            response.setContato(contatoDTO);
+            // response.setContatos(contatoDTO);
         }
 
         // Endereços
