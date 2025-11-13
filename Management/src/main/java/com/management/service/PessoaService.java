@@ -100,7 +100,6 @@ public class PessoaService {
     // =====================================================
     // Conversores auxiliares (DTO ↔ Entidade)
     // =====================================================
-
     private Pessoa converterRequestParaEntidade(PessoaRequest request) {
         Pessoa pessoa = new Pessoa();
         pessoa.setNome(request.getNome());
@@ -112,6 +111,14 @@ public class PessoaService {
             pessoa.setEnderecos(enderecos);
         } else {
             pessoa.setEnderecos(new ArrayList<>());
+        }
+
+        // Contatos
+        if (request.getContatos() != null) {
+            List<Contato> contatos = converterContatos(request.getContatos());
+            pessoa.setContatos(contatos);
+        }else{
+            pessoa.setContatos(new ArrayList<>());
         }
 
         // Documentos
