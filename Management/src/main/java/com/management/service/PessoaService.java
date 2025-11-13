@@ -2,6 +2,7 @@ package com.management.service;
 
 import com.management.DTOs.*;
 import com.management.exception.ResourceNotFoundException;
+import com.management.logging.AppLogger;
 import com.management.model.*;
 import com.management.repository.PessoaRepository;
 import com.management.repository.TipoContatoRepository;
@@ -26,23 +27,34 @@ public class PessoaService {
     @Autowired
     private TipoContatoRepository tipoContatoRepository;
 
+    @Autowired
+    private static final AppLogger log = AppLogger.getInstance();
+
     // =======================================
     // Cadastrar (POST)
     // =======================================
     public PessoaResponse cadastrar(PessoaRequest request) {
+
         Pessoa pessoa = converterRequestParaEntidade(request);
 
-        // Garante vínculos bidirecionais
-        if (pessoa.getEnderecos() != null) {
-            pessoa.getEnderecos().forEach(e -> e.setPessoa(pessoa));
-        }
+        log.info(getClass(), "Iniciando cadastro da pessoa.");
 
-        if (pessoa.getContatos() != null) {
-            pessoa.getContatos().forEach(c -> c.setPessoa(pessoa));
-        }
+        try {
+            // Garante vínculos bidirecionais
+            if (pessoa.getEnderecos() != null) {
+                pessoa.getEnderecos().forEach(e -> e.setPessoa(pessoa));
+            }
 
-        Pessoa salva = pessoaRepository.save(pessoa);
-        return converterParaResponse(salva);
+            if (pessoa.getContatos() != null) {
+                pessoa.getContatos().forEach(c -> c.setPessoa(pessoa));
+            }
+
+            Pessoa salva = pessoaRepository.save(pessoa);
+            return converterParaResponse(salva);
+        } catch (Exception ex) {
+            log.error(getClass(), "Erro ao cadastrar pessoa", ex);
+            throw new RuntimeException("Erro ao cadastrar pessoa", ex);
+        }
     }
 
     // =======================================
