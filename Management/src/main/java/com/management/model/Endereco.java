@@ -41,6 +41,9 @@ public class Endereco {
     @Schema(description = "CEP do endereço", example = "01000-000")
     private String cep;
 
+    @Schema(description = "Complemento do endereço", example = "Apartamento 12, Bloco B")
+    private String complemento;
+
     @Enumerated(EnumType.STRING)
     @NotNull(message = "O tipo do endereço é obrigatório")
     @Schema(
@@ -62,7 +65,7 @@ public class Endereco {
     }
 
     public Endereco(String rua, String numero, String bairro, String cidade,
-                    String estado, String cep, TipoEndereco tipo) {
+                    String estado, String cep, TipoEndereco tipo, String complemento) {
         this.rua = rua;
         this.numero = numero;
         this.bairro = bairro;
@@ -70,6 +73,7 @@ public class Endereco {
         this.estado = estado;
         this.cep = cep;
         this.tipo = tipo;
+        this.complemento = complemento;
     }
 
     // ==============================
@@ -131,6 +135,14 @@ public class Endereco {
         this.cep = cep;
     }
 
+    public String getComplemento() {
+        return complemento;
+    }
+
+    public void setComplemento(String complemento) {
+        this.complemento = complemento;
+    }
+
     public TipoEndereco getTipo() {
         return tipo;
     }
@@ -156,7 +168,9 @@ public class Endereco {
 
     @Override
     public String toString() {
-        return tipo + ": " + rua + ", " + numero + " - " + bairro + ", " + cidade + "/" + estado +
+        return tipo + ": " + rua + ", " + numero +
+                (complemento != null && !complemento.isBlank() ? " (" + complemento + ")" : "") +
+                " - " + bairro + ", " + cidade + "/" + estado +
                 " (CEP: " + cep + ")";
     }
 

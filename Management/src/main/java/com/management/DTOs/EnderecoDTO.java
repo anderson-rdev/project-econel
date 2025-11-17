@@ -33,6 +33,9 @@ public class EnderecoDTO {
     @NotBlank(message = "O CEP é obrigatório")
     private String cep;
 
+    @Schema(description = "Complemento do endereço", example = "Casa 1")
+    private String Complemento;
+
     @Schema(description = "Tipo do endereço (RESIDENCIAL, COMERCIAL, etc)", example = "RESIDENCIAL")
     @NotNull(message = "O tipo do endereço é obrigatório")
     private TipoEndereco tipo;
@@ -92,5 +95,13 @@ public class EnderecoDTO {
 
     public void setTipo(TipoEndereco tipo) {
         this.tipo = tipo;
+    }
+
+    public String getComplemento() {
+        return Complemento;
+    }
+
+    public void setComplemento(String complemento) {
+        Complemento = complemento;
     }
 }

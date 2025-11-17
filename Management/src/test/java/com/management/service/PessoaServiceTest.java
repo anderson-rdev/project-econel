@@ -26,68 +26,52 @@ class PessoaServiceTest {
     private TipoContatoRepository tipoContatoRepository;
 
     @Test
-    @DisplayName("Cadastrar paciente e gravar no banco de dados")
-    void CadastrarPessoaComSucesso() {
+    @DisplayName("Cadastrar outra pessoa testando campo Complemento")
+    void CadastrarPessoa_ComComplemento() {
 
-        // Busca tipos de contato (EMAIL e TELEFONE)
+        // Busca tipo de contato EMAIL
         TipoContato tipoEmail = tipoContatoRepository
                 .findByDescricaoIgnoreCase("EMAIL")
                 .orElseThrow(() -> new ResourceNotFoundException("Tipo de contato 'EMAIL' não encontrado."));
 
-//        TipoContato tipoTelefone = tipoContatoRepository
-//                .findByDescricaoIgnoreCase("TELEFONE")
-//                .orElseThrow(() -> new ResourceNotFoundException("Tipo de contato 'TELEFONE' não encontrado."));
-
         // Monta o objeto de requisição
         PessoaRequest request = new PessoaRequest();
-        request.setNome("");
-        request.setTipoSanguineo(TipoSanguineo.AB_POSITIVO);
+        request.setNome("Maria Eduarda Fernandes");
+        request.setTipoSanguineo(TipoSanguineo.O_POSITIVO);
 
         // Contatos
         ContatoRequest email = new ContatoRequest();
         email.setTipo(tipoEmail.getDescricao());
-        email.setValor("Teste.pereira@gmail.com");
-
-//        ContatoRequest telefone = new ContatoRequest();
-//        telefone.setTipo(tipoTelefone.getDescricao());
-//        telefone.setValor("(11) 98877-6655");
+        email.setValor("maria.eduarda.teste@gmail.com");
 
         request.setContatos(Arrays.asList(email));
 
-        // Endereços
+        // Endereço residencial com complemento
         EnderecoDTO residencial = new EnderecoDTO();
-        residencial.setRua("Rua dos Pinheiros");
-        residencial.setNumero("180");
-        residencial.setBairro("Zona Leste");
-        residencial.setCidade("São Paulo");
+        residencial.setRua("Rua das Acácias");
+        residencial.setNumero("250");
+        residencial.setComplemento("Bloco B, Apto 32"); // ← TESTANDO COMPLEMENTO
+        residencial.setBairro("Jardim Central");
+        residencial.setCidade("Campinas");
         residencial.setEstado("SP");
-        residencial.setCep("05422-010");
+        residencial.setCep("13045-789");
         residencial.setTipo(TipoEndereco.RESIDENCIAL);
-
-//        EnderecoDTO comercial = new EnderecoDTO();
-//        comercial.setRua("Av. Paulista");
-//        comercial.setNumero("1009");
-//        comercial.setBairro("Bela Vista");
-//        comercial.setCidade("São Paulo");
-//        comercial.setEstado("SP");
-//        comercial.setCep("01311-200");
-//        comercial.setTipo(TipoEndereco.COMERCIAL);
 
         request.setEnderecos(Arrays.asList(residencial));
 
         // Documento
         DocumentosDTO documento = new DocumentosDTO();
         documento.setTipoDocumento("CPF");
-        documento.setNumeroDocumento("385.965.555-19");
+        documento.setNumeroDocumento("123.456.789-55");
         request.setDocumentos(Arrays.asList(documento));
 
         // Filiação
         FiliacaoDTO filiacao = new FiliacaoDTO();
-        filiacao.setNomePai("Nonato Pereira");
-        filiacao.setNomeMae("Rapariga da Silva Pereira");
+        filiacao.setNomePai("Carlos Roberto Fernandes");
+        filiacao.setNomeMae("Ana Paula da Silva Fernandes");
         request.setFiliacoes(Arrays.asList(filiacao));
 
-        // Executa o cadastro — grava no banco
+        // Executa o cadastro
         pessoaService.cadastrar(request);
     }
 }

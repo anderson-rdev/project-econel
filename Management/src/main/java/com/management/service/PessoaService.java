@@ -188,6 +188,7 @@ public class PessoaService {
             e.setCidade(dto.getCidade());
             e.setEstado(dto.getEstado());
             e.setCep(dto.getCep());
+            e.setComplemento(dto.getComplemento());
             e.setTipo(dto.getTipo());
             return e;
         }).collect(Collectors.toList());
@@ -252,6 +253,7 @@ public class PessoaService {
                 dto.setCidade(e.getCidade());
                 dto.setEstado(e.getEstado());
                 dto.setCep(e.getCep());
+                e.setComplemento(dto.getComplemento());
                 dto.setTipo(e.getTipo());
                 enderecosDTO.add(dto);
             }
