@@ -40,7 +40,7 @@ class PessoaServiceTest {
 
         // Monta o objeto de requisição
         PessoaRequest request = new PessoaRequest();
-        request.setNome("Teste Souza");
+        request.setNome("");
         request.setTipoSanguineo(TipoSanguineo.AB_POSITIVO);
 
         // Contatos

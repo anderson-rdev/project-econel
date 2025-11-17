@@ -35,8 +35,13 @@ public class PessoaService {
     // =======================================
     public PessoaResponse cadastrar(PessoaRequest request) {
 
-        Pessoa pessoa = converterRequestParaEntidade(request);
+        // ====== Validação de nome nulo ou vazio ======
+        if (request.getNome() == null || request.getNome().isEmpty()) {
+            log.warn(getClass(), "Tentativa de cadastro com nome nulo ou vazio.");
+            throw new IllegalArgumentException("O nome da pessoa não pode ser nulo ou vazio.");
+        }
 
+        Pessoa pessoa = converterRequestParaEntidade(request);
         log.info(getClass(), "Iniciando cadastro da pessoa.");
 
         try {
