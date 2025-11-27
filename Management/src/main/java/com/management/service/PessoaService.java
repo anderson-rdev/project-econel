@@ -41,6 +41,12 @@ public class PessoaService {
             throw new IllegalArgumentException("O nome da pessoa não pode ser nulo ou vazio.");
         }
 
+        // Verifica se já existe um registro com o mesmo nome
+        if (pessoaRepository.existsByNomeIgnoreCase(request.getNome().trim())) {
+            log.warn(getClass(), "Tentativa de cadastro com nome já existente: " + request.getNome());
+            throw new IllegalArgumentException("Já existe uma pessoa cadastrada com esse nome.");
+        }
+
         Pessoa pessoa = converterRequestParaEntidade(request);
         log.info(getClass(), "Iniciando cadastro da pessoa.");
 
