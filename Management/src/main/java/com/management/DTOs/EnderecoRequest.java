@@ -9,7 +9,7 @@ public class EnderecoRequest {
     private String estado;
     private String cep;
     private String tipo;
-    private String Complemento;
+    private String complemento;
 
     // Getters e Setters para todos os campos
     public String getRua() { return rua; }
@@ -34,10 +34,10 @@ public class EnderecoRequest {
     public void setTipo(String tipo) { this.tipo = tipo; }
 
     public String getComplemento() {
-        return Complemento;
+        return complemento;
     }
 
     public void setComplemento(String complemento) {
-        Complemento = complemento;
+        this.complemento = complemento;
     }
 }

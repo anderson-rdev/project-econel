@@ -253,7 +253,7 @@ public class PessoaService {
                 dto.setCidade(e.getCidade());
                 dto.setEstado(e.getEstado());
                 dto.setCep(e.getCep());
-                e.setComplemento(dto.getComplemento());
+                dto.setComplemento(e.getComplemento());
                 dto.setTipo(e.getTipo());
                 enderecosDTO.add(dto);
             }

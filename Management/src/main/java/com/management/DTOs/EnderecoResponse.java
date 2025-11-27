@@ -29,7 +29,7 @@ public class EnderecoResponse {
     private String cep;
 
     @Schema(description = "Complemento do endereço", example = "Casa 1")
-    private String Complemento;
+    private String complemento;
 
     @Schema(description = "Tipo do endereço (RESIDENCIAL, COMERCIAL, etc)", example = "RESIDENCIAL")
     private TipoEndereco tipo;
@@ -40,7 +40,7 @@ public class EnderecoResponse {
     // Construtor completo (útil para conversão da entidade)
     public EnderecoResponse(Long id, String rua, String numero, String bairro,
                             String cidade, String estado, String cep, TipoEndereco tipo,
-                            String Complemento) {
+                            String complemento) {
         this.id = id;
         this.rua = rua;
         this.numero = numero;
@@ -49,7 +49,7 @@ public class EnderecoResponse {
         this.estado = estado;
         this.cep = cep;
         this.tipo = tipo;
-        this.Complemento = Complemento;
+        this.complemento = complemento;
     }
 
     // Getters e Setters
@@ -75,11 +75,11 @@ public class EnderecoResponse {
     public void setCep(String cep) { this.cep = cep; }
 
     public String getComplemento() {
-        return Complemento;
+        return complemento;
     }
 
     public void setComplemento(String complemento) {
-        Complemento = complemento;
+        complemento = complemento;
     }
 
     public TipoEndereco getTipo() {
