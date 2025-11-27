@@ -1,13 +1,16 @@
 package com.management.DTOs;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 
 @Schema(description = "Representa os documentos de uma pessoa, como RG, CPF, passaporte etc.")
 public class DocumentosDTO {
 
+    @NotBlank(message = "O número do documento não pode ser vazio")
     @Schema(description = "Número do documento", example = "123456789")
     private String numeroDocumento;
 
+    @NotBlank(message = "O tipo do documento não pode ser vazio")
     @Schema(description = "Tipo do documento", example = "CPF")
     private String tipoDocumento;
 

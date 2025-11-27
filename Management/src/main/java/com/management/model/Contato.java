@@ -5,7 +5,10 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Contatos")
+@Table(
+        name = "Contatos",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"contato", "id_tipo_contato"})
+)
 public class Contato implements Serializable {
 
     @Id

@@ -3,7 +3,10 @@ package com.management.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Documentos")
+@Table(
+        name = "Documentos",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"numeroDocumento", "tipoDocumento"})
+)
 public class Documentos extends Dominio {
 
     @Id
@@ -14,16 +17,17 @@ public class Documentos extends Dominio {
     private String tipoDocumento;
 
     @ManyToOne
-    @JoinColumn(name = "pessoa_id") // chave estrangeira para Pessoa
+    @JoinColumn(name = "pessoa_id")
     private Pessoa pessoa;
 
     public Documentos() {
         super();
     }
 
-    public Documentos(String numeroDocumento, String tipoDocumento) {
+    public Documentos(String numeroDocumento, String tipoDocumento, Pessoa pessoa) {
         this.numeroDocumento = numeroDocumento;
         this.tipoDocumento = tipoDocumento;
+        this.pessoa = pessoa;
     }
 
     public Long getId() {

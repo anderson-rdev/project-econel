@@ -4,6 +4,7 @@ import com.management.DTOs.*;
 import com.management.exception.ResourceNotFoundException;
 import com.management.logging.AppLogger;
 import com.management.model.*;
+import com.management.repository.DocumentosRepository;
 import com.management.repository.PessoaRepository;
 import com.management.repository.TipoContatoRepository;
 import org.jetbrains.annotations.NotNull;
@@ -25,14 +26,14 @@ public class PessoaService {
     private PessoaRepository pessoaRepository;
 
     @Autowired
+    private DocumentosRepository documentosRepository;
+
+    @Autowired
     private TipoContatoRepository tipoContatoRepository;
 
     @Autowired
     private static final AppLogger log = AppLogger.getInstance();
 
-    // =======================================
-    // Cadastrar (POST)
-    // =======================================
     public PessoaResponse cadastrar(PessoaRequest request) {
 
         // ====== Validação de nome nulo ou vazio ======
@@ -60,13 +61,31 @@ public class PessoaService {
                 pessoa.getContatos().forEach(c -> c.setPessoa(pessoa));
             }
 
+// ===== Validação de documentos únicos =====
+            if (pessoa.getDocumentos() != null) {
+                for (Documentos doc : pessoa.getDocumentos()) {
+                    if (documentosRepository.existsByNumeroDocumentoAndTipoDocumento(
+                            doc.getNumeroDocumento(), doc.getTipoDocumento())) {
+                        log.warn(getClass(), "Tentativa de cadastro com documento já existente: "
+                                + doc.getNumeroDocumento() + " / " + doc.getTipoDocumento());
+                        throw new IllegalArgumentException(
+                                "Já existe um documento cadastrado com este número e tipo: "
+                                        + doc.getNumeroDocumento() + " / " + doc.getTipoDocumento()
+                        );
+                    }
+                    doc.setPessoa(pessoa); // garante o relacionamento bidirecional
+                }
+            }
+
             Pessoa salva = pessoaRepository.save(pessoa);
             return converterParaResponse(salva);
+
         } catch (Exception ex) {
             log.error(getClass(), "Erro ao cadastrar pessoa", ex);
             throw new RuntimeException("Erro ao cadastrar pessoa", ex);
         }
     }
+
 
     // =======================================
     // Consultar (GET)
@@ -151,6 +170,7 @@ public class PessoaService {
         } else {
             pessoa.setDocumentos(new ArrayList<>());
         }
+
 
         // Filiações
         if (request.getFiliacoes() != null) {

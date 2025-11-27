@@ -3,6 +3,8 @@ package com.management.DTOs;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.management.enums.TipoSanguineo;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +28,8 @@ public class PessoaResponse {
     @JsonProperty("enderecos")
     private List<EnderecoDTO> enderecos = new ArrayList<>();
 
-    @Schema(description = "Lista de documentos da pessoa")
+    @Schema(description = "Lista de documentos da pessoa (CPF, RG, passaporte etc.)")
+    @Valid
     @JsonProperty("documentos")
     private List<DocumentosDTO> documentos = new ArrayList<>();
 
@@ -71,6 +74,7 @@ public class PessoaResponse {
     }
 
     public List<DocumentosDTO> getDocumentos() { return documentos; }
+
     public void setDocumentos(List<DocumentosDTO> documentos) {
         this.documentos = documentos != null ? documentos : new ArrayList<>();
     }

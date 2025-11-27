@@ -36,13 +36,13 @@ class PessoaServiceTest {
 
         // Monta o objeto de requisição
         PessoaRequest request = new PessoaRequest();
-        request.setNome("Maria Eduarda Fernandes");
+        request.setNome("Darda Fernandes");
         request.setTipoSanguineo(TipoSanguineo.O_POSITIVO);
 
         // Contatos
         ContatoRequest email = new ContatoRequest();
         email.setTipo(tipoEmail.getDescricao());
-        email.setValor("maria.eduarda.teste@gmail.com");
+        email.setValor("Eduarda.teste@gmail.com");
 
         request.setContatos(Arrays.asList(email));
 
@@ -61,8 +61,10 @@ class PessoaServiceTest {
 
         // Documento
         DocumentosDTO documento = new DocumentosDTO();
+
         documento.setTipoDocumento("CPF");
         documento.setNumeroDocumento("123.456.789-55");
+
         request.setDocumentos(Arrays.asList(documento));
 
         // Filiação

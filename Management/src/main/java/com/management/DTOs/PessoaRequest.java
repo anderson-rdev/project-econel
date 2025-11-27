@@ -49,7 +49,7 @@ public class PessoaRequest {
     // ============================================================
     // 🔹 Documentos
     // ============================================================
-    @Schema(description = "Lista de documentos da pessoa (CPF, RG, CRM, etc.)")
+    @Schema(description = "Lista de documentos da pessoa (CPF, RG, passaporte etc.)")
     @Valid
     @JsonProperty("documentos")
     private List<DocumentosDTO> documentos = new ArrayList<>();
@@ -81,6 +81,7 @@ public class PessoaRequest {
 
     @JsonProperty("contatos")
     public List<ContatoRequest> getContatos() { return contatos; }
+
     @JsonProperty("contatos")
     public void setContatos(List<ContatoRequest> contatos) {
         this.contatos = contatos != null ? contatos : new ArrayList<>();
@@ -88,6 +89,7 @@ public class PessoaRequest {
 
     @JsonProperty("enderecos")
     public List<EnderecoDTO> getEnderecos() { return enderecos; }
+
     @JsonProperty("enderecos")
     public void setEnderecos(List<EnderecoDTO> enderecos) {
         this.enderecos = enderecos != null ? enderecos : new ArrayList<>();
@@ -95,6 +97,7 @@ public class PessoaRequest {
 
     @JsonProperty("documentos")
     public List<DocumentosDTO> getDocumentos() { return documentos; }
+
     @JsonProperty("documentos")
     public void setDocumentos(List<DocumentosDTO> documentos) {
         this.documentos = documentos != null ? documentos : new ArrayList<>();
@@ -102,6 +105,7 @@ public class PessoaRequest {
 
     @JsonProperty("filiacoes")
     public List<FiliacaoDTO> getFiliacoes() { return filiacoes; }
+
     @JsonProperty("filiacoes")
     public void setFiliacoes(List<FiliacaoDTO> filiacoes) {
         this.filiacoes = filiacoes != null ? filiacoes : new ArrayList<>();
